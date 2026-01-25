@@ -1,0 +1,5 @@
+[
+  { "id": "morning", "title": "أذكار الصباح" },
+  { "id": "evening", "title": "أذكار المساء" },
+  { "id": "tasbeeh", "title": "تسبيح" }
+]
