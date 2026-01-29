@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مسبحة إلكترونية</title>
+
+<style>
+:root{
+  --bg:#f2f6f5;
+  --card:#ffffff;
+  --primary:#2fa38c;
+  --accent:#d4b44c;
+  --text:#1a1a1a;
+}
+
+body.dark{
+  --bg:#0e1b1a;
+  --card:#142726;
+  --primary:#41c9ad;
+  --accent:#e6cc6a;
+  --text:#f1f1f1;
+}
+
+*{
+  box-sizing:border-box;
+  font-family:"Segoe UI",Tahoma,sans-serif;
+}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  height:100vh;
+  overflow:hidden;
+}
+
+/* ===== Top Bar ===== */
+.top-bar{
+  display:flex;
+  gap:10px;
+  padding:14px;
+}
+
+select, .mode-btn{
+  flex:1;
+  padding:12px;
+  border-radius:16px;
+  border:none;
+  background:var(--card);
+  color:var(--text);
+  font-size:15px;
+  box-shadow:0 0 15px rgba(0,0,0,.08);
+}
+
+/* ===== Card Area ===== */
+.card-area{
+  height:200px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+  position:relative;
+}
+
+.card{
+  width:88%;
+  min-height:150px;
+  background:var(--card);
+  border-radius:26px;
+  padding:34px 22px;
+  text-align:center;
+  font-size:18px;
+  line-height:1.9;
+  position:absolute;
+  border:2px solid var(--primary);
+  box-shadow:
+    0 0 25px rgba(47,163,140,.45),
+    0 0 50px rgba(47,163,140,.25);
+  transition:transform .4s ease, opacity .4s ease;
+}
+
+/* Card Labels */
+.card-header,
+.card-footer{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:13px;
+  color:var(--accent);
+}
+
+.card-header{ top:10px; }
+.card-footer{ bottom:10px; }
+
+.center{transform:translateX(0);opacity:1}
+.left{transform:translateX(-120%);opacity:0}
+.right{transform:translateX(120%);opacity:0}
+
+/* ===== Tasbeeh ===== */
+.tasbeeh{
+  position:absolute;
+  bottom:10px;          /* نزلنا المجموعة كلها */
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:14px;             /* مسافة بين العناصر */
+  margin-top:40px;      /* فراغ واضح من الكارت */
+}
+
+.counter{
+  font-size:42px;
+  color:var(--accent);
+}
+
+.bead{
+  width:130px;
+  height:130px;
+  border-radius:50%;
+  background:var(--primary);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:30px;
+  color:white;
+  box-shadow:
+    0 0 30px rgba(47,163,140,.8),
+    0 0 60px rgba(47,163,140,.4);
+  transition:transform .1s, box-shadow .3s, background .3s;
+}
+
+.bead:active{
+  transform:scale(.9);
+}
+
+.controls button{
+  border:none;
+  padding:10px 22px;
+  border-radius:16px;
+  background:var(--card);
+  color:var(--text);
+}
+
+/* ===== Mobile ===== */
+@media (max-width:480px){
+  .card{font-size:17px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="top-bar">
+  <select onchange="loadAzkar(this.value)">
+    <option value="">اختر الذكر</option>
+    <option value="morning">أذكار الصباح</option>
+    <option value="evening">أذكار المساء</option>
+    <option value="tasbeeh">تسبيح</option>
+  </select>
+  <button class="mode-btn" onclick="toggleMode()">ليلي / نهاري</button>
+</div>
+
+<div class="card-area">
+  <div class="card center" id="card">
+    <div class="card-header" id="cardTitle"></div>
+    <div id="cardText">اختر الذكر من القائمة</div>
+    <div class="card-footer" id="cardIndex"></div>
+  </div>
+</div>
+
+<div class="tasbeeh">
+  <div class="counter" id="count">0</div>
+  <div class="bead" onclick="increment()">📿</div>
+  <div class="controls">
+    <button onclick="resetCount()">مسح</button>
+  </div>
+</div>
+
+<audio id="click">
+  <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_6d8b3b5d1a.mp3">
+</audio>
+
+<script>
+let count = localStorage.getItem("count") || 0;
+let azkar = [];
+let index = 0;
+
+const card = document.getElementById("card");
+const cardText = document.getElementById("cardText");
+const cardTitle = document.getElementById("cardTitle");
+const cardIndex = document.getElementById("cardIndex");
+const countEl = document.getElementById("count");
+const sound = document.getElementById("click");
+
+countEl.textContent = count;
+updateColor();
+
+function increment(){
+  count++;
+  localStorage.setItem("count",count);
+  countEl.textContent = count;
+  sound.currentTime = 0;
+  sound.play();
+  updateColor();
+}
+
+function resetCount(){
+  count = 0;
+  localStorage.setItem("count",0);
+  countEl.textContent = 0;
+  updateColor();
+}
+
+function updateColor(){
+  let step = Math.floor(count / 33) % 3;
+  const colors = ["#2fa38c","#3f7bd9","#8e44ad"];
+  document.querySelector(".bead").style.background = colors[step];
+}
+
+function loadAzkar(type){
+  index = 0;
+  if(type==="morning"){
+    cardTitle.textContent="أذكار الصباح";
+    azkar=[
+      "أصبحنا وأصبح الملك لله",
+      "اللهم بك أصبحنا وبك أمسينا",
+      "رضيت بالله ربًا وبالإسلام دينًا"
+    ];
+  }else if(type==="evening"){
+    cardTitle.textContent="أذكار المساء";
+    azkar=[
+      "أمسينا وأمسى الملك لله",
+      "اللهم بك أمسينا وبك أصبحنا",
+      "أعوذ بكلمات الله التامات من شر ما خلق"
+    ];
+  }else if(type==="tasbeeh"){
+    cardTitle.textContent="تسبيح";
+    azkar=["سبحان الله","الحمد لله","الله أكبر"];
+  }else{
+    azkar=[];
+  }
+  updateCard();
+}
+
+function updateCard(){
+  cardText.textContent = azkar[index] || "اختر الذكر من القائمة";
+  cardIndex.textContent = azkar.length ? `${index+1} / ${azkar.length}` : "";
+}
+
+/* Swipe card only */
+let startX=0;
+card.addEventListener("touchstart",e=>startX=e.touches[0].clientX);
+card.addEventListener("touchend",e=>{
+  let endX=e.changedTouches[0].clientX;
+  if(endX-startX>60 && index>0) slide("right",--index);
+  if(startX-endX>60 && index<azkar.length-1) slide("left",++index);
+});
+
+function slide(dir,newIndex){
+  card.classList.add(dir==="left"?"left":"right");
+  setTimeout(()=>{
+    updateCard();
+    card.className="card center";
+  },300);
+}
+
+function toggleMode(){
+  document.body.classList.toggle("dark");
+}
+</script>
+
+</body>
+</html>

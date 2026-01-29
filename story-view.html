@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>القصة</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600&family=Amiri&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#0f2a24;
+  --card:#163b33;
+  --primary:#d4af37;
+  --text:#ffffff;
+  --muted:#cfd8d3;
+}
+body{
+  margin:0;
+  font-family:Cairo;
+  background:var(--bg);
+  color:var(--text);
+}
+.back{
+  padding:12px;
+  color:var(--muted);
+  cursor:pointer;
+}
+header{
+  text-align:center;
+  padding:16px;
+  color:var(--primary);
+}
+.content{
+  padding:18px;
+  font-family:Amiri;
+  font-size:19px;
+  line-height:1.9;
+}
+.content p{margin-bottom:14px}
+.error{
+  padding:20px;
+  text-align:center;
+  color:var(--muted);
+  display:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="back" onclick="history.back()">← رجوع</div>
+
+<header>
+  <h2 id="title"></h2>
+</header>
+
+<div class="content" id="content"></div>
+
+<div class="error" id="error">
+تعذر الوصول للبيانات، الرجاء إعادة التشغيل<br>
+وإذا استمرت المشكلة تواصل مع الإدارة
+</div>
+
+<script>
+const params = new URLSearchParams(location.search);
+const cat = params.get("cat");
+const file = params.get("file");
+
+if(!cat || !file){
+  showError();
+}else{
+  fetch(`data/stories/${cat}/${file}`)
+    .then(r => r.json())
+    .then(data=>{
+      document.getElementById("title").textContent = data.title;
+      const box = document.getElementById("content");
+      data.content.forEach(text=>{
+        const p = document.createElement("p");
+        p.textContent = text;
+        box.appendChild(p);
+      });
+    })
+    .catch(showError);
+}
+
+function showError(){
+  document.getElementById("error").style.display = "block";
+}
+</script>
+
+</body>
+</html>
