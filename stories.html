@@ -67,7 +67,7 @@ header{
 const list = document.getElementById("list");
 const errorBox = document.getElementById("error");
 
-// قسم الأسماء بالعربية
+// أسماء الأقسام بالعربية
 const categoryNames = {
   "Prophets": "قصص الأنبياء",
   "sahaba": "قصص الصحابة",
@@ -75,7 +75,7 @@ const categoryNames = {
   "quran": "قصص من القرآن"
 };
 
-// تحميل أقسام القصص
+// تحميل فهرس القصص
 fetch("data/stories/categories.json")
   .then(r => r.json())
   .then(showCategories)
@@ -84,7 +84,7 @@ fetch("data/stories/categories.json")
 function showCategories(data){
   list.innerHTML = "";
   
-  // عرض الأقسام حسب الترتيب المطلوب
+  // عرض الأقسام بالترتيب المطلوب
   ["Prophets", "sahaba", "lessons", "quran"].forEach(catId => {
     if (data[catId]) {
       const div = document.createElement("div");
@@ -98,6 +98,26 @@ function showCategories(data){
 
 function loadCategory(catId, items){
   list.innerHTML = `<div class="back" onclick="location.reload()">← رجوع للأقسام</div>`;
+  
+  items.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "item";
+    div.textContent = item.title;
+    div.onclick = () => {
+      // تمرير القسم واسم الملف
+      location.href = `story-view.html?file=${item.file}`;
+    };
+    list.appendChild(div);
+  });
+}
+
+function showError(){
+  errorBox.style.display = "block";
+}
+</script>
+
+</body>
+</html>  list.innerHTML = `<div class="back" onclick="location.reload()">← رجوع للأقسام</div>`;
   
   items.forEach(item => {
     const div = document.createElement("div");
