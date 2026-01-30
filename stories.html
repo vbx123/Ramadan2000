@@ -117,37 +117,4 @@ function showError(){
 </script>
 
 </body>
-</html>  list.innerHTML = `<div class="back" onclick="location.reload()">← رجوع للأقسام</div>`;
-  
-  items.forEach(item => {
-    const div = document.createElement("div");
-    div.className = "item";
-    div.textContent = item.title;
-    div.onclick = () => {
-      location.href = `story-view.html?cat=${catId}&file=${item.file}`;
-    };
-    list.appendChild(div);
-  });
-}
-
-function showError(){
-  errorBox.style.display = "block";
-}
-</script>
-
-</body>
-</html>          location.href = `story-view.html?cat=${cat}&file=${item.file}`;
-        };
-        list.appendChild(div);
-      });
-    })
-    .catch(showError);
-}
-
-function showError(){
-  errorBox.style.display = "block";
-}
-</script>
-
-</body>
-</html>
+</html>  
