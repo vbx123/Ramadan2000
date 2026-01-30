@@ -67,6 +67,14 @@ header{
 const list = document.getElementById("list");
 const errorBox = document.getElementById("error");
 
+// قسم الأسماء بالعربية
+const categoryNames = {
+  "Prophets": "قصص الأنبياء",
+  "sahaba": "قصص الصحابة",
+  "lessons": "قصص للعبرة",
+  "quran": "قصص من القرآن"
+};
+
 // تحميل أقسام القصص
 fetch("data/stories/categories.json")
   .then(r => r.json())
@@ -75,26 +83,40 @@ fetch("data/stories/categories.json")
 
 function showCategories(data){
   list.innerHTML = "";
-  data.forEach(cat=>{
+  
+  // عرض الأقسام حسب الترتيب المطلوب
+  ["Prophets", "sahaba", "lessons", "quran"].forEach(catId => {
+    if (data[catId]) {
+      const div = document.createElement("div");
+      div.className = "item";
+      div.textContent = categoryNames[catId] || catId;
+      div.onclick = () => loadCategory(catId, data[catId]);
+      list.appendChild(div);
+    }
+  });
+}
+
+function loadCategory(catId, items){
+  list.innerHTML = `<div class="back" onclick="location.reload()">← رجوع للأقسام</div>`;
+  
+  items.forEach(item => {
     const div = document.createElement("div");
     div.className = "item";
-    div.textContent = cat.title;
-    div.onclick = ()=>loadCategory(cat.id);
+    div.textContent = item.title;
+    div.onclick = () => {
+      location.href = `story-view.html?cat=${catId}&file=${item.file}`;
+    };
     list.appendChild(div);
   });
 }
 
-function loadCategory(cat){
-  fetch(`data/stories/${cat}/index.json`)
-    .then(r => r.json())
-    .then(items=>{
-      list.innerHTML = `<div class="back" onclick="location.reload()">← رجوع للأقسام</div>`;
-      items.forEach(item=>{
-        const div = document.createElement("div");
-        div.className = "item";
-        div.textContent = item.title;
-        div.onclick = ()=>{
-          location.href = `story-view.html?cat=${cat}&file=${item.file}`;
+function showError(){
+  errorBox.style.display = "block";
+}
+</script>
+
+</body>
+</html>          location.href = `story-view.html?cat=${cat}&file=${item.file}`;
         };
         list.appendChild(div);
       });
