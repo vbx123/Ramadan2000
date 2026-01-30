@@ -2,7 +2,7 @@
   "Prophets": [
     {
       "title": "قصة نبي الله آدم",
-      "file": "data/stories/prophets/adam.json"
+      "file": "prophets/adam.json"
     },
     {
       "title": "قصة نبي الله نوح",
