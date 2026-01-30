@@ -44,6 +44,11 @@ header{
   color:var(--muted);
   display:none;
 }
+.loading{
+  text-align:center;
+  padding:20px;
+  color:var(--muted);
+}
 </style>
 </head>
 
@@ -55,6 +60,8 @@ header{
   <h2 id="title"></h2>
 </header>
 
+<div class="loading" id="loading">جاري تحميل القصة...</div>
+
 <div class="content" id="content"></div>
 
 <div class="error" id="error">
@@ -65,27 +72,58 @@ header{
 <script>
 const params = new URLSearchParams(location.search);
 const file = params.get("file");
+const loadingEl = document.getElementById("loading");
+const contentEl = document.getElementById("content");
+const errorEl = document.getElementById("error");
+const titleEl = document.getElementById("title");
+
+// إخفاء جميع العناصر في البداية
+loadingEl.style.display = "block";
+contentEl.style.display = "none";
+errorEl.style.display = "none";
 
 if(!file){
-  showError();
+  showError("لم يتم تحديد ملف القصة");
 }else{
-  // تحميل ملف القصة من المسار الكامل
-  fetch(`data/stories/${file}`)
-    .then(r => r.json())
-    .then(data => {
-      document.getElementById("title").textContent = data.title;
-      const box = document.getElementById("content");
-      data.content.forEach(text => {
-        const p = document.createElement("p");
-        p.textContent = text;
-        box.appendChild(p);
-      });
+  // تحميل ملف القصة - المسار: data/stories/[file]
+  const filePath = `data/stories/${file}`;
+  console.log("محاولة تحميل:", filePath); // للتصحيح
+  
+  fetch(filePath)
+    .then(r => {
+      if (!r.ok) throw new Error(`HTTP error! status: ${r.status}`);
+      return r.json();
     })
-    .catch(showError);
+    .then(data => {
+      console.log("تم تحميل القصة:", data); // للتصحيح
+      loadingEl.style.display = "none";
+      contentEl.style.display = "block";
+      
+      titleEl.textContent = data.title || "قصة بدون عنوان";
+      
+      if (data.content && Array.isArray(data.content)) {
+        data.content.forEach(text => {
+          const p = document.createElement("p");
+          p.textContent = text;
+          contentEl.appendChild(p);
+        });
+      } else {
+        const p = document.createElement("p");
+        p.textContent = "المحتوى غير متوفر";
+        contentEl.appendChild(p);
+      }
+    })
+    .catch(err => {
+      console.error("خطأ في التحميل:", err);
+      showError(`تعذر تحميل القصة: ${file}<br>${err.message}`);
+    });
 }
 
-function showError(){
-  document.getElementById("error").style.display = "block";
+function showError(message){
+  loadingEl.style.display = "none";
+  contentEl.style.display = "none";
+  errorEl.innerHTML = message;
+  errorEl.style.display = "block";
 }
 </script>
 
