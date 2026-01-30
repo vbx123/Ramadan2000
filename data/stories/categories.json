@@ -6,23 +6,23 @@
     },
     {
       "title": "قصة نبي الله نوح",
-      "file": "Prophets/no7.json"
+      "file": "prophets/no7.json"
     },
     {
       "title": "قصة نبي الله إبراهيم",
-      "file": "Prophets/ebrahim.json"
+      "file": "prophets/ebrahim.json"
     },
     {
       "title": "قصة نبي الله موسى",
-      "file": "Prophets/mousa.json"
+      "file": "prophets/mousa.json"
     },
     {
       "title": "قصة نبي الله عيسى",
-      "file": "Prophets/3esa.json"
+      "file": "prophets/3esa.json"
     },
     {
       "title": "قصة نبي الله محمد",
-      "file": "Prophets/mohamed.json"
+      "file": "prophets/mohamed.json"
     }
   ],
   
