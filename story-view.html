@@ -64,13 +64,12 @@ header{
 
 <script>
 const params = new URLSearchParams(location.search);
-const cat = params.get("cat");
 const file = params.get("file");
 
-if(!cat || !file){
+if(!file){
   showError();
 }else{
-  // تحميل ملف القصة مباشرة من المسار المحدد
+  // تحميل ملف القصة من المسار الكامل
   fetch(`data/stories/${file}`)
     .then(r => r.json())
     .then(data => {
