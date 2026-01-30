@@ -1,3 +1,10 @@
 [
-  { "title": "عثمان بن عفان", "file": "othman.json" }
+  {
+    "title": "عثمان بن عفان رضي الله عنه",
+    "file": "othman.json"
+  },
+  {
+    "title": "عمر بن الخطاب رضي الله عنه",
+    "file": "omar.json"
+  }
 ]
