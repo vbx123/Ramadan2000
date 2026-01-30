@@ -1,5 +1,89 @@
-[
-  { "id": "prophets", "title": "قصص الأنبياء" },
-  { "id": "sahaba", "title": "قصص الصحابة" },
-  { "id": "lessons", "title": "قصص العبرة" }
-]
+{
+  "Prophets": [
+    {
+      "title": "قصة نبي الله آدم",
+      "file": "Prophets/adam.json"
+    },
+    {
+      "title": "قصة نبي الله نوح",
+      "file": "Prophets/no7.json"
+    },
+    {
+      "title": "قصة نبي الله إبراهيم",
+      "file": "Prophets/ebrahim.json"
+    },
+    {
+      "title": "قصة نبي الله موسى",
+      "file": "Prophets/mousa.json"
+    },
+    {
+      "title": "قصة نبي الله عيسى",
+      "file": "Prophets/3esa.json"
+    },
+    {
+      "title": "قصة نبي الله محمد",
+      "file": "Prophets/mohamed.json"
+    }
+  ],
+  
+  "sahaba": [
+    {
+      "title": "قصة أبو بكر الصديق",
+      "file": "sahaba/abu_bakr.json"
+    },
+    {
+      "title": "قصة عمر بن الخطاب",
+      "file": "sahaba/omar.json"
+    },
+    {
+      "title": "قصة عثمان بن عفان",
+      "file": "sahaba/3othman.json"
+    },
+    {
+      "title": "قصة علي بن أبي طالب",
+      "file": "sahaba/ali.json"
+    },
+    {
+      "title": "قصة بلال بن رباح",
+      "file": "sahaba/belal.json"
+    }
+  ],
+  
+  "lessons": [
+    {
+      "title": "قصة الأبرص والأقرع والأعمى",
+      "file": "lessons/el_abras_wel_aqra3_wel_a3ma.json"
+    },
+    {
+      "title": "قصة الثلاثة الذين حبسهم المطر",
+      "file": "lessons/el_thalatha_elle_7abasohm_el_matar.json"
+    },
+    {
+      "title": "قصة الرجل الذي أمات مئة نفس",
+      "file": "lessons/el_ragol_elle_amat_mea_nafs.json"
+    }
+  ],
+  
+  "quran": [
+    {
+      "title": "قصة أصحاب الفيل",
+      "file": "quran/as7ab_el_feel.json"
+    },
+    {
+      "title": "قصة أصحاب الكهف",
+      "file": "quran/as7ab_el_kahf.json"
+    },
+    {
+      "title": "قصة قارون",
+      "file": "quran/qaroon.json"
+    },
+    {
+      "title": "قصة سيدنا يوسف",
+      "file": "quran/youssef.json"
+    },
+    {
+      "title": "قصة سيدنا سليمان مع النمل",
+      "file": "quran/soliman_ma3_el_naml.json"
+    }
+  ]
+}
