@@ -63,22 +63,50 @@ header{
 </div>
 
 <script>
-fetch(`/data/stories/${cat}/${file}`)
-  .then(r => {
-    if (!r.ok) throw new Error("not found");
-    return r.json();
-  })
-  .then(data => {
-    document.getElementById("title").textContent = data.title;
-    const box = document.getElementById("content");
-    box.innerHTML = "";
-    data.content.forEach(t => {
-      const p = document.createElement("p");
-      p.textContent = t;
-      box.appendChild(p);
+const titleEl = document.getElementById("title");
+const contentEl = document.getElementById("content");
+const errorEl = document.getElementById("error");
+
+const params = new URLSearchParams(window.location.search);
+const cat = params.get("cat");
+const file = params.get("file");
+
+if (!cat || !file) {
+  showError();
+} else {
+  fetch(`/data/stories/${cat}/${file}`)
+    .then(response => {
+      if (!response.ok) throw new Error("File not found");
+      return response.json();
+    })
+    .then(data => {
+      // العنوان
+      titleEl.textContent = data.title || "بدون عنوان";
+
+      // مسح أي محتوى قديم
+      contentEl.innerHTML = "";
+
+      // التأكد إن المحتوى Array
+      if (!Array.isArray(data.content)) {
+        throw new Error("Invalid content format");
+      }
+
+      // عرض الفقرات
+      data.content.forEach(text => {
+        const p = document.createElement("p");
+        p.textContent = text;
+        contentEl.appendChild(p);
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      showError();
     });
-  })
-  .catch(showError);
+}
+
+function showError() {
+  errorEl.style.display = "block";
+}
 </script>
 
 </body>
