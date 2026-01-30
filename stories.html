@@ -75,14 +75,18 @@ const categoryNames = {
   "quran": "قصص من القرآن"
 };
 
-// تحميل فهرس القصص
+// تحميل فهرس القصص - المسار: data/stories/categories.json
 fetch("data/stories/categories.json")
-  .then(r => r.json())
+  .then(r => {
+    if (!r.ok) throw new Error("Network response was not ok");
+    return r.json();
+  })
   .then(showCategories)
   .catch(showError);
 
 function showCategories(data){
   list.innerHTML = "";
+  console.log("تم تحميل الأقسام:", data); // للتصحيح
   
   // عرض الأقسام بالترتيب المطلوب
   ["Prophets", "sahaba", "lessons", "quran"].forEach(catId => {
@@ -98,23 +102,25 @@ function showCategories(data){
 
 function loadCategory(catId, items){
   list.innerHTML = `<div class="back" onclick="location.reload()">← رجوع للأقسام</div>`;
+  console.log("تحميل القصص للقسم:", catId, items); // للتصحيح
   
   items.forEach(item => {
     const div = document.createElement("div");
     div.className = "item";
     div.textContent = item.title;
     div.onclick = () => {
-      // تمرير القسم واسم الملف
-      location.href = `story-view.html?file=${item.file}`;
+      console.log("الملف المختار:", item.file); // للتصحيح
+      location.href = `story-view.html?file=${encodeURIComponent(item.file)}`;
     };
     list.appendChild(div);
   });
 }
 
-function showError(){
+function showError(err){
+  console.error("حدث خطأ:", err); // للتصحيح
   errorBox.style.display = "block";
 }
 </script>
 
 </body>
-</html>  
+</html>
