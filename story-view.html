@@ -63,49 +63,30 @@ header{
 </div>
 
 <script>
-const titleEl = document.getElementById("title");
-const contentEl = document.getElementById("content");
-const errorEl = document.getElementById("error");
-
-const params = new URLSearchParams(window.location.search);
+const params = new URLSearchParams(location.search);
 const cat = params.get("cat");
 const file = params.get("file");
 
-if (!cat || !file) {
+if(!cat || !file){
   showError();
-} else {
-  fetch(`/data/stories/${cat}/${file}`)
-    .then(response => {
-      if (!response.ok) throw new Error("File not found");
-      return response.json();
-    })
+}else{
+  // تحميل ملف القصة مباشرة من المسار المحدد
+  fetch(`data/stories/${file}`)
+    .then(r => r.json())
     .then(data => {
-      // العنوان
-      titleEl.textContent = data.title || "بدون عنوان";
-
-      // مسح أي محتوى قديم
-      contentEl.innerHTML = "";
-
-      // التأكد إن المحتوى Array
-      if (!Array.isArray(data.content)) {
-        throw new Error("Invalid content format");
-      }
-
-      // عرض الفقرات
+      document.getElementById("title").textContent = data.title;
+      const box = document.getElementById("content");
       data.content.forEach(text => {
         const p = document.createElement("p");
         p.textContent = text;
-        contentEl.appendChild(p);
+        box.appendChild(p);
       });
     })
-    .catch(err => {
-      console.error(err);
-      showError();
-    });
+    .catch(showError);
 }
 
-function showError() {
-  errorEl.style.display = "block";
+function showError(){
+  document.getElementById("error").style.display = "block";
 }
 </script>
 
