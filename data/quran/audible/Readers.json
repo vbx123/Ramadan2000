@@ -1,0 +1,20 @@
+[
+  {
+    "id": "sds",
+    "name": "عبد الرحمن السديس",
+    "image": "sds.jpg",
+    "baseUrl": "https://server11.mp3quran.net/sds/"
+  },
+  {
+    "id": "dosary",
+    "name": "ياسر الدوسري",
+    "image": "dosary.jpg",
+    "baseUrl": "https://server11.mp3quran.net/yasser/"
+  },
+  {
+    "id": "basit",
+    "name": "عبد الباسط عبد الصمد",
+    "image": "basit.jpg",
+    "baseUrl": "https://server7.mp3quran.net/basit/"
+  }
+]
