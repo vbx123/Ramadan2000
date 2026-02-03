@@ -141,7 +141,7 @@ function selectReader(reader) {
 
 // ===== Load Surahs =====
 function loadSurahs() {
-  fetch("data/quran/readable/Titles.json")
+  fetch("data/quran/audible/Titles.json")
   .then(res => {
     if (!res.ok) throw new Error();
     return res.json();
