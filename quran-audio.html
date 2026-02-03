@@ -2,6 +2,8 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>القرآن المسموع</title>
 
 <style>
@@ -12,70 +14,79 @@ body {
   color: #1b4332;
 }
 
+/* ===== Header ===== */
 header {
   background: #2d6a4f;
-  color: white;
-  padding: 15px;
+  color: #fff;
+  padding: 14px;
   text-align: center;
-  font-size: 22px;
+  font-size: 20px;
 }
 
+/* ===== Search ===== */
 .search {
-  padding: 10px;
-  width: 95%;
+  width: 92%;
   margin: 10px auto;
   display: block;
+  padding: 10px;
   font-size: 16px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
 }
 
-.readers, .surahs {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
-  padding: 15px;
+/* ===== Readers ===== */
+.readers {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  padding: 10px;
 }
 
-.card {
-  background: white;
+.reader-card {
+  width: 45%;
+  background: #fff;
   border-radius: 15px;
-  box-shadow: 0 4px 8px rgba(0,0,0,.1);
+  margin-bottom: 12px;
   text-align: center;
   padding: 10px;
-  cursor: pointer;
-  transition: .3s;
+  box-shadow: 0 3px 8px rgba(0,0,0,.1);
 }
 
-.card:hover {
-  transform: scale(1.05);
-}
-
-.card img {
+.reader-card img {
   width: 100%;
   border-radius: 12px;
 }
 
+/* ===== Surahs ===== */
+.surahs {
+  padding: 10px;
+}
+
 .surah {
-  background: white;
+  background: #fff;
+  margin-bottom: 8px;
   padding: 12px;
-  border-radius: 10px;
+  border-radius: 12px;
   text-align: center;
-  cursor: pointer;
+  font-size: 18px;
   box-shadow: 0 2px 6px rgba(0,0,0,.1);
 }
 
+/* ===== Audio Player ===== */
 .audio-player {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   background: #1b4332;
-  color: white;
+  color: #fff;
   padding: 10px;
   display: none;
 }
 
 .audio-player p {
   margin: 5px 0;
+  font-size: 14px;
   text-align: center;
 }
 
@@ -87,9 +98,9 @@ audio {
 
 <body>
 
-<header id="title">القرآن المسموع</header>
+<header id="pageTitle">القرآن المسموع</header>
 
-<input type="text" class="search" placeholder="ابحث عن قارئ أو سورة">
+<input type="text" class="search" placeholder="ابحث">
 
 <div class="readers" id="readers"></div>
 <div class="surahs" id="surahs" style="display:none"></div>
@@ -102,39 +113,43 @@ audio {
 <script>
 let currentReader = null;
 
-// تحميل القراء
+// ===== Load Readers =====
 fetch("data/quran/audible/Readers.json")
 .then(res => res.json())
-.then(readers => {
-  const box = document.getElementById("readers");
-  readers.forEach(r => {
+.then(data => {
+  const readers = document.getElementById("readers");
+  data.forEach(r => {
     const card = document.createElement("div");
-    card.className = "card";
+    card.className = "reader-card";
     card.innerHTML = `
       <img src="data/quran/audible/${r.image}">
       <p>${r.name}</p>
     `;
     card.onclick = () => selectReader(r);
-    box.appendChild(card);
+    readers.appendChild(card);
   });
 });
 
+// ===== Select Reader =====
 function selectReader(reader) {
   currentReader = reader;
   document.getElementById("readers").style.display = "none";
-  document.getElementById("surahs").style.display = "grid";
-  document.getElementById("title").innerText = reader.name;
+  document.getElementById("surahs").style.display = "block";
+  document.getElementById("pageTitle").innerText = reader.name;
   loadSurahs();
 }
 
-// تحميل السور
+// ===== Load Surahs =====
 function loadSurahs() {
   fetch("data/quran/readable/Titles.json")
-  .then(res => res.json())
-  .then(surahs => {
+  .then(res => {
+    if (!res.ok) throw new Error();
+    return res.json();
+  })
+  .then(data => {
     const box = document.getElementById("surahs");
     box.innerHTML = "";
-    surahs.forEach(s => {
+    data.forEach(s => {
       const div = document.createElement("div");
       div.className = "surah";
       div.innerText = s.name;
@@ -144,22 +159,20 @@ function loadSurahs() {
   })
   .catch(() => {
     document.getElementById("surahs").innerHTML =
-      "تعذر الوصول الرجاء إعادة التشغيل وإذا استمرت المشكلة تواصل مع الإدارة";
+      "تعذر الوصول، يرجى إعادة التشغيل وإذا استمرت المشكلة تواصل مع الإدارة";
   });
 }
 
-// تشغيل السورة
+// ===== Play =====
 function playSurah(surah) {
   const audio = document.getElementById("audio");
-  const player = document.getElementById("player");
-
   audio.src = currentReader.baseUrl + surah.id + ".mp3";
   audio.play();
 
   document.getElementById("nowPlaying").innerText =
-    `${surah.name} - ${currentReader.name}`;
+    `${surah.name} – ${currentReader.name}`;
 
-  player.style.display = "block";
+  document.getElementById("player").style.display = "block";
 }
 </script>
 
