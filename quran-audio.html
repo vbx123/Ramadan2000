@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>القرآن المسموع</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#0f2a24;
+  --card:#163b33;
+  --primary:#d4af37;
+  --text:#ffffff;
+}
+body{
+  margin:0;
+  font-family:Cairo;
+  background:var(--bg);
+  color:var(--text);
+}
+header{
+  text-align:center;
+  padding:16px;
+  color:var(--primary);
+}
+.search{
+  padding:0 16px 10px;
+}
+.search input{
+  width:100%;
+  padding:10px;
+  border-radius:12px;
+  border:none;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:16px;
+  padding:16px;
+}
+.reader{
+  background:var(--card);
+  border-radius:18px;
+  padding:10px;
+  text-align:center;
+  cursor:pointer;
+  transition:.3s;
+}
+.reader:hover{
+  transform:translateY(-5px);
+}
+.reader img{
+  width:100%;
+  border-radius:14px;
+}
+.player{
+  background:var(--card);
+  margin:16px;
+  padding:14px;
+  border-radius:16px;
+  display:none;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h3>القرآن الكريم – مسموع</h3>
+</header>
+
+<div class="search">
+  <input type="text" placeholder="ابحث عن قارئ...">
+</div>
+
+<div class="grid" id="readers"></div>
+
+<div class="player" id="player">
+  <div id="nowPlaying"></div>
+  <audio id="audio" controls style="width:100%;margin-top:8px"></audio>
+</div>
+
+<script>
+const readersBox = document.getElementById("readers");
+const player = document.getElementById("player");
+const audio = document.getElementById("audio");
+const now = document.getElementById("nowPlaying");
+
+fetch("data/quran/audible/Readers.json")
+  .then(r=>r.json())
+  .then(data=>{
+    data.forEach(r=>{
+      const div=document.createElement("div");
+      div.className="reader";
+      div.innerHTML=`
+        <img src="assets/images/readers/${r.image}">
+        <div>${r.name}</div>
+      `;
+      div.onclick=()=>playSurah(r,"001","الفاتحة");
+      readersBox.appendChild(div);
+    });
+  });
+
+function playSurah(reader,num,name){
+  player.style.display="block";
+  const src = reader.baseUrl + num + ".mp3";
+  audio.src = src;
+  audio.play();
+  now.textContent = `القارئ: ${reader.name} — ${name}`;
+}
+</script>
+
+</body>
+</html>

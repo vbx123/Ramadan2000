@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>القرآن الكريم</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#0f2a24;
+  --card:#163b33;
+  --primary:#d4af37;
+  --text:#ffffff;
+}
+body{
+  margin:0;
+  font-family:Cairo;
+  background:var(--bg);
+  color:var(--text);
+}
+header{
+  text-align:center;
+  padding:20px;
+  color:var(--primary);
+}
+.cards{
+  display:flex;
+  gap:20px;
+  padding:20px;
+}
+.card{
+  flex:1;
+  background:var(--card);
+  padding:30px;
+  border-radius:20px;
+  text-align:center;
+  cursor:pointer;
+  transition:.3s;
+}
+.card:hover{
+  transform:translateY(-6px);
+}
+.icon{
+  font-size:40px;
+  margin-bottom:10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h2>القرآن الكريم</h2>
+</header>
+
+<div class="cards">
+  <div class="card" onclick="location.href='quran-read.html'">
+    <div class="icon">📖</div>
+    <h3>قرآن مقروء</h3>
+  </div>
+
+  <div class="card" onclick="location.href='quran-audio.html'">
+    <div class="icon">🎧</div>
+    <h3>قرآن مسموع</h3>
+  </div>
+</div>
+
+</body>
+</html>
