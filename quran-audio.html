@@ -19,10 +19,11 @@ body{
   font-family:Cairo;
   background:var(--bg);
   color:var(--text);
+  padding-bottom:95px;
 }
 header{
   text-align:center;
-  padding:16px;
+  padding:14px;
   color:var(--primary);
 }
 .search{
@@ -40,26 +41,42 @@ header{
   gap:16px;
   padding:16px;
 }
-.reader{
+.card,.item{
   background:var(--card);
   border-radius:18px;
-  padding:10px;
+  padding:12px;
   text-align:center;
   cursor:pointer;
   transition:.3s;
 }
-.reader:hover{
-  transform:translateY(-5px);
+.card:hover,.item:hover{
+  transform:translateY(-4px);
 }
-.reader img{
+.card img{
   width:100%;
   border-radius:14px;
 }
+.list{
+  padding:16px;
+  display:none;
+  animation:fade .3s;
+}
+@keyframes fade{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:none}
+}
+.back{
+  margin-bottom:12px;
+  color:var(--primary);
+  cursor:pointer;
+}
 .player{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
   background:var(--card);
-  margin:16px;
-  padding:14px;
-  border-radius:16px;
+  padding:10px;
   display:none;
 }
 </style>
@@ -68,49 +85,130 @@ header{
 <body>
 
 <header>
-  <h3>القرآن الكريم – مسموع</h3>
+  <h3 id="pageTitle">القرآن الكريم – مسموع</h3>
 </header>
 
 <div class="search">
-  <input type="text" placeholder="ابحث عن قارئ...">
+  <input type="text" id="search" placeholder="ابحث عن سورة...">
 </div>
 
+<!-- القرّاء -->
 <div class="grid" id="readers"></div>
 
+<!-- السور -->
+<div class="list" id="surahs">
+  <div class="back" onclick="backToReaders()">← تغيير القارئ</div>
+  <div id="surahList"></div>
+</div>
+
+<!-- المشغل -->
 <div class="player" id="player">
   <div id="nowPlaying"></div>
-  <audio id="audio" controls style="width:100%;margin-top:8px"></audio>
+  <audio id="audio" controls style="width:100%"></audio>
 </div>
 
 <script>
-const readersBox = document.getElementById("readers");
-const player = document.getElementById("player");
-const audio = document.getElementById("audio");
-const now = document.getElementById("nowPlaying");
+let currentReader=null;
+let surahs=[];
 
+const readersBox=document.getElementById("readers");
+const surahsBox=document.getElementById("surahs");
+const surahList=document.getElementById("surahList");
+const audio=document.getElementById("audio");
+const player=document.getElementById("player");
+const now=document.getElementById("nowPlaying");
+const title=document.getElementById("pageTitle");
+const search=document.getElementById("search");
+
+/* تحميل القرّاء */
 fetch("data/quran/audible/Readers.json")
+.then(r=>r.json())
+.then(data=>{
+  data.forEach(reader=>{
+    const div=document.createElement("div");
+    div.className="card";
+    div.innerHTML=`
+      <img src="assets/images/readers/${reader.image}">
+      <div>${reader.name}</div>
+    `;
+    div.onclick=()=>selectReader(reader);
+    readersBox.appendChild(div);
+  });
+});
+
+/* اختيار قارئ */
+function selectReader(reader){
+  currentReader=reader;
+  title.textContent=reader.name;
+  readersBox.style.display="none";
+  surahsBox.style.display="block";
+  loadSurahs();
+}
+
+/* تحميل السور */
+function loadSurahs(){
+  fetch("data/quran/readable/Titles.json")
   .then(r=>r.json())
   .then(data=>{
-    data.forEach(r=>{
-      const div=document.createElement("div");
-      div.className="reader";
-      div.innerHTML=`
-        <img src="assets/images/readers/${r.image}">
-        <div>${r.name}</div>
-      `;
-      div.onclick=()=>playSurah(r,"001","الفاتحة");
-      readersBox.appendChild(div);
-    });
+    surahs=data;
+    renderSurahs(data);
   });
-
-function playSurah(reader,num,name){
-  player.style.display="block";
-  const src = reader.baseUrl + num + ".mp3";
-  audio.src = src;
-  audio.play();
-  now.textContent = `القارئ: ${reader.name} — ${name}`;
 }
+
+function renderSurahs(list){
+  surahList.innerHTML="";
+  list.forEach(s=>{
+    const div=document.createElement("div");
+    div.className="item";
+    div.textContent=s.name;
+    div.onclick=()=>playSurah(s);
+    surahList.appendChild(div);
+  });
+}
+
+/* تشغيل سورة */
+function playSurah(surah){
+  const src=currentReader.baseUrl + surah.id + ".mp3";
+  audio.src=src;
+  audio.play();
+  player.style.display="block";
+  now.textContent=`${surah.name} — ${currentReader.name}`;
+
+  localStorage.setItem("lastAudioSurah",JSON.stringify({
+    reader:currentReader,
+    surah
+  }));
+}
+
+/* رجوع */
+function backToReaders(){
+  surahsBox.style.display="none";
+  readersBox.style.display="grid";
+  title.textContent="القرآن الكريم – مسموع";
+  player.style.display="none";
+}
+
+/* بحث */
+search.oninput=()=>{
+  const q=search.value.trim();
+  const filtered=surahs.filter(s=>s.name.includes(q));
+  renderSurahs(filtered);
+};
+
+/* استرجاع آخر سورة */
+window.onload=()=>{
+  const saved=localStorage.getItem("lastAudioSurah");
+  if(saved){
+    const data=JSON.parse(saved);
+    currentReader=data.reader;
+    title.textContent=data.reader.name;
+    readersBox.style.display="none";
+    surahsBox.style.display="block";
+    loadSurahs();
+    setTimeout(()=>playSurah(data.surah),500);
+  }
+};
 </script>
 
 </body>
-</html>
+  </html>
