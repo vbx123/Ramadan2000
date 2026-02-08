@@ -1,218 +1,99 @@
-<!DOCTYPE html><html lang="ar" dir="rtl">
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>هوية تطبيق رمضاني</title>  <!-- Google Fonts -->  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">  <style>
-    /* ===== الهوية اللونية ===== */
-    :root{
-      --bg-main:#0f2a24;          /* أخضر داكن هادئ */
-      --bg-card:#163b33;          /* بطاقات */
-      --primary:#d4af37;          /* ذهبي رمضاني */
-      --secondary:#2fa38c;        /* أخضر هادئ */
-      --text-main:#f5f5f5;        /* نص رئيسي */
-      --text-muted:#cfd8d3;       /* نص ثانوي */
-      --danger:#c94c4c;
-    }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>زاد رمضان</title>
+  <link rel="stylesheet" href="theme.css">
+</head>
+<body>
 
-    *{
-      box-sizing:border-box;
-      font-family:'Cairo', sans-serif;
-    }
-
-    body{
-      margin:0;
-      background:linear-gradient(180deg,#0f2a24,#0b1f1a);
-      color:var(--text-main);
-    }
-
-    header{
-      padding:20px;
-      text-align:center;
-    }
-
-    header h1{
-      font-family:'Amiri', serif;
-      font-size:28px;
-      color:var(--primary);
-      margin:0;
-    }
-
-    header p{
-      margin-top:8px;
-      color:var(--text-muted);
-      font-size:14px;
-    }
-
-    .container{
-      padding:16px;
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-      gap:14px;
-    }
-
-    .card{
-      background:var(--bg-card);
-      border-radius:16px;
-      padding:18px 14px;
-      text-align:center;
-      box-shadow:0 6px 16px rgba(0,0,0,.35);
-      transition:transform .3s ease, box-shadow .3s ease, background .3s ease;
-      cursor:pointer;
-    }
-    }
-
-    .card:hover{
-      transform:translateY(-6px) scale(1.02);
-      box-shadow:0 10px 24px rgba(0,0,0,.45);
-    }
-
-    .icon{
-      font-size:30px;
-      margin-bottom:10px;
-      color:var(--primary);
-    }
-
-    .card h3{
-      margin:0;
-      font-size:16px;
-      font-weight:600;
-    }
-
-    .card p{
-      font-size:12px;
-      color:var(--text-muted);
-      margin-top:6px;
-    }
-
-    .daily{
-      margin:20px 16px;
-      background:linear-gradient(135deg,#2fa38c,#1d6f60);
-      border-radius:18px;
-      padding:18px;
-      box-shadow:0 8px 20px rgba(0,0,0,.35);
-    }
-
-    .daily h2{
-      margin:0 0 10px;
-      font-size:18px;
-      color:#fff;
-    }
-
-    .daily blockquote{
-      margin:0;
-      font-family:'Amiri', serif;
-      font-size:18px;
-      line-height:1.7;
-      color:#fdfdfd;
-    }
-
-    footer{
-      margin:24px 0 12px;
-      text-align:center;
-      font-size:12px;
-      color:var(--text-muted);
-    }
-  </style></head>
-<body>  <header>
-    <h1>زاد رمضان</h1>
-    <p>رفيقك اليومي في شهر الخير</p>
-  </header>  <section class="daily" onclick="openDialog()">
-    <h2>آية اليوم</h2>
-    <blockquote>
-      ﴿ يَا أَيُّهَا الَّذِينَ آمَنُوا كُتِبَ عَلَيْكُمُ الصِّيَامُ ﴾
-    </blockquote>
-  </section>  <!-- Dialog -->  <div class="dialog" id="dialog">
-    <div class="dialog-box">
-      <h3>آية اليوم</h3>
-      <p class="ayah">﴿ يَا أَيُّهَا الَّذِينَ آمَنُوا كُتِبَ عَلَيْكُمُ الصِّيَامُ ﴾</p>
-      <p class="tafsir">فرض الله الصيام تزكيةً للنفس وتهذيبًا للشهوة وتقويةً للتقوى.</p>
-      <button onclick="closeDialog()">إغلاق</button>
-    </div>
-  </div>  <main class="container">
-    <div class="card" onclick="go('quran.html')">$1القرآن الكريم$2</div><div class="card" onclick="go('stories.html')">$1قصص إسلامية$2</div>
-
-<div class="card" onclick="go('tasbeeh.html')">
-  <div class="icon">📿</div>
-  <h3>الأذكار</h3>
-  <p>مسبحة إلكترونية</p>
+<!-- Top Bar -->
+<div class="top-bar">
+  <button class="icon-btn" onclick="toggleTheme()">🌗</button>
+  <div class="top-title">زاد رمضان</div>
+  <button class="icon-btn" onclick="alert('الدعم الفني')">🛠️</button>
 </div>
 
-<div class="card">
-  <div class="icon">🤲</div>
-  <h3>الأدعية</h3>
-  <p>مختارة بعناية</p>
-</div>
+<header>
+  <h1>زاد رمضان</h1>
+  <p>رفيقك اليومي في شهر الخير</p>
+</header>
 
-<div class="card">
-  <div class="icon">❓</div>
-  <h3>فقه وأسئلة</h3>
-  <p>ما يهم المسلم</p>
-</div>
+<section class="daily">
+  <h2 id="dailyTitle">آية اليوم</h2>
+  <blockquote id="dailyText">...</blockquote>
+</section>
 
-<div class="card">
-  <div class="icon">🕋</div>
-  <h3>مواقيت الصلاة</h3>
-  <p>حسب موقعك</p>
-</div>
+<main class="container">
+  <div class="card" onclick="go('quran.html')">
+    <img src="https://cdn.jsdelivr.net/npm/lucide-static/icons/book-open.svg">
+    <h3>القرآن الكريم</h3>
+  </div>
 
-<div class="card">
-  <div class="icon">🌿</div>
-  <h3>أخلاق المسلم</h3>
-  <p>سلوك ومعاملة</p>
-</div>
+  <div class="card" onclick="go('stories.html')">
+    <img src="https://cdn.jsdelivr.net/npm/lucide-static/icons/scroll.svg">
+    <h3>قصص إسلامية</h3>
+  </div>
 
-<div class="card">
-  <div class="icon">🌍</div>
-  <h3>تثقيفي</h3>
-  <p>رمضان حول العالم</p>
-</div>
+  <div class="card">
+    <img src="https://cdn.jsdelivr.net/npm/lucide-static/icons/activity.svg">
+    <h3>الأذكار</h3>
+  </div>
 
-  </main>  <footer>
-    © تطبيق زاد رمضان – هوية بصرية تجريبية
-  </footer><script>
-  function go(page){
-    document.body.classList.add('fade');
-    setTimeout(()=>location.href=page,300);
-  }
+  <div class="card">
+    <img src="https://cdn.jsdelivr.net/npm/lucide-static/icons/heart.svg">
+    <h3>الأدعية</h3>
+  </div>
 
-  function openDialog(){
-    document.getElementById('dialog').classList.add('show');
+  <div class="card">
+    <img src="https://cdn.jsdelivr.net/npm/lucide-static/icons/help-circle.svg">
+    <h3>فقه وأسئلة</h3>
+  </div>
+
+  <div class="card">
+    <img src="https://cdn.jsdelivr.net/npm/lucide-static/icons/moon.svg">
+    <h3>مواقيت الصلاة</h3>
+  </div>
+</main>
+
+<footer>© تطبيق زاد رمضان</footer>
+
+<script>
+/* ========= Theme ========= */
+function toggleTheme(){
+  const b=document.body;
+  if(b.dataset.theme==="light"){
+    b.removeAttribute("data-theme");
+    localStorage.setItem("theme","green");
+  }else{
+    b.dataset.theme="light";
+    localStorage.setItem("theme","light");
   }
-  function closeDialog(){
-    document.getElementById('dialog').classList.remove('show');
-  }
-</script><style>
-  body.fade{opacity:0;transition:.3s}
-  .dialog{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.6);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    opacity:0;
-    pointer-events:none;
-    transition:.3s;
-  }
-  .dialog.show{opacity:1;pointer-events:auto}
-  .dialog-box{
-    background:var(--bg-card);
-    padding:20px;
-    border-radius:16px;
-    max-width:90%;
-    animation:scaleIn .3s ease;
-  }
-  .dialog-box button{
-    margin-top:14px;
-    padding:8px 16px;
-    border:none;
-    border-radius:10px;
-    background:var(--primary);
-    cursor:pointer;
-  }
-  @keyframes scaleIn{
-    from{transform:scale(.8);opacity:0}
-    to{transform:scale(1);opacity:1}
-  }
-</style></body>
-</html>
+}
+if(localStorage.getItem("theme")==="light"){
+  document.body.dataset.theme="light";
+}
+
+/* ========= Navigation ========= */
+function go(p){setTimeout(()=>location.href=p,200)}
+
+/* ========= Daily Content ========= */
+let dayIndex=Math.floor(Date.now()/86400000);
+
+fetch("daily.json")
+.then(r=>r.json())
+.then(data=>{
+  const day=data[dayIndex % data.length];
+  let i=0;
+  setInterval(()=>{
+    const item=day.items[i%day.items.length];
+    document.getElementById("dailyTitle").textContent=item.title;
+    document.getElementById("dailyText").textContent=item.text;
+    i++;
+  },10000);
+});
+</script>
+
+</body>
+    </html>
