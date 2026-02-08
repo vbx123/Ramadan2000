@@ -1,0 +1,194 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Amiri:wght@400;700&display=swap');
+
+:root {
+  --font-ui: 'Cairo', sans-serif;
+  --font-content: 'Amiri', serif;
+  --transition: all .3s ease;
+}
+
+/* ================== الثيم الأخضر ================== */
+:root,
+[data-theme="green"] {
+  --bg: #0f2a24;
+  --surface: #163b33;
+  --surface-hover: #1c4a40;
+  --primary: #d4af37;
+  --text: #ffffff;
+  --muted: #cfd8d3;
+  --danger: #ff6b6b;
+  --border: rgba(255,255,255,.1);
+}
+
+/* ================== الثيم الأبيض ================== */
+[data-theme="light"] {
+  --bg: #f7f7f7;
+  --surface: #ffffff;
+  --surface-hover: #f0f0f0;
+  --primary: #2e7d32;
+  --text: #1f2933;
+  --muted: #6b7280;
+  --danger: #d32f2f;
+  --border: rgba(0,0,0,.1);
+}
+
+/* ================== Base ================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-ui);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ================== Top Bar ================== */
+.top-bar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.top-title {
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--primary);
+}
+
+.icon-btn {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--text);
+  transition: var(--transition);
+}
+
+.icon-btn:hover {
+  color: var(--primary);
+}
+
+/* ================== Pages ================== */
+.page {
+  display: none;
+  padding: 16px;
+  max-width: 900px;
+  margin: auto;
+}
+
+.page.active {
+  display: block;
+}
+
+/* ================== Header ================== */
+.main-header {
+  text-align: center;
+  padding: 20px 0;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--primary);
+  color: var(--primary);
+}
+
+/* ================== Cards ================== */
+.list {
+  display: grid;
+  gap: 12px;
+}
+
+.card {
+  background: var(--surface);
+  padding: 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: var(--transition);
+}
+
+.card:hover {
+  background: var(--surface-hover);
+  transform: translateY(-3px);
+  border-color: var(--primary);
+}
+
+.card h3 {
+  color: var(--primary);
+  margin-bottom: 6px;
+}
+
+/* ================== Buttons ================== */
+.back-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.back-btn:hover {
+  color: var(--primary);
+}
+
+.nav-links {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+.nav-btn {
+  background: var(--surface);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.nav-btn:hover {
+  background: var(--surface-hover);
+}
+
+/* ================== Content ================== */
+.story-content {
+  font-family: var(--font-content);
+  font-size: 20px;
+  line-height: 1.8;
+}
+
+.story-content p {
+  margin-bottom: 20px;
+}
+
+/* ================== States ================== */
+.loading,
+.error {
+  text-align: center;
+  padding: 30px;
+}
+
+.error {
+  color: var(--danger);
+  border: 1px solid var(--danger);
+  border-radius: 12px;
+}
+
+.hidden {
+  display: none;
+}
+
+/* ================== Mobile ================== */
+@media (max-width: 600px) {
+  .story-content {
+    font-size: 18px;
+  }
+}
