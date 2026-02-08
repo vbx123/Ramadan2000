@@ -8,147 +8,92 @@
 </head>
 <body>
 
-<!-- ===== Top Bar ===== -->
-<header class="top-bar">
+<!-- Top Bar -->
+<div class="top-bar">
   <button class="icon-btn" onclick="toggleTheme()">🌗</button>
   <div class="top-title">زاد رمضان</div>
-  <button class="icon-btn">🛠️</button>
+  <button class="icon-btn" onclick="alert('الدعم الفني')">🛠️</button>
+</div>
+
+<header>
+  <h1>زاد رمضان</h1>
+  <p>رفيقك اليومي في شهر الخير</p>
 </header>
 
-<!-- ===== Page 1 ===== -->
-<div id="categoriesPage" class="page active">
-  <header class="main-header">
-    <h1>الأقسام</h1>
-  </header>
+<section class="daily">
+  <h2 id="dailyTitle">آية اليوم</h2>
+  <blockquote id="dailyText">...</blockquote>
+</section>
 
-  <div id="categoriesList" class="list"></div>
-</div>
-
-<!-- ===== Page 2 ===== -->
-<div id="storiesPage" class="page">
-  <button class="back-btn" onclick="showPage('categoriesPage')">← رجوع</button>
-  <header class="main-header">
-    <h1 id="sectionTitle"></h1>
-  </header>
-  <div id="storiesList" class="list"></div>
-</div>
-
-<!-- ===== Page 3 ===== -->
-<div id="storyPage" class="page">
-  <button class="back-btn" onclick="showPage('storiesPage')">← رجوع</button>
-  <header class="main-header">
-    <h1 id="storyTitle"></h1>
-  </header>
-
-  <div id="loading" class="loading">جاري التحميل...</div>
-  <div id="storyContent" class="story-content"></div>
-
-  <div class="nav-links">
-    <button class="nav-btn" onclick="loadPreviousStory()">السابق</button>
-    <button class="nav-btn" onclick="showPage('storiesPage')">القائمة</button>
-    <button class="nav-btn" onclick="loadNextStory()">التالي</button>
+<main class="container">
+  <div class="card" onclick="go('quran.html')">
+    <img src="https://cdn.jsdelivr.net/npm/lucide-static/icons/book-open.svg">
+    <h3>القرآن الكريم</h3>
   </div>
-</div>
+
+  <div class="card" onclick="go('stories.html')">
+    <img src="https://cdn.jsdelivr.net/npm/lucide-static/icons/scroll.svg">
+    <h3>قصص إسلامية</h3>
+  </div>
+
+  <div class="card">
+    <img src="https://cdn.jsdelivr.net/npm/lucide-static/icons/activity.svg">
+    <h3>الأذكار</h3>
+  </div>
+
+  <div class="card">
+    <img src="https://cdn.jsdelivr.net/npm/lucide-static/icons/heart.svg">
+    <h3>الأدعية</h3>
+  </div>
+
+  <div class="card">
+    <img src="https://cdn.jsdelivr.net/npm/lucide-static/icons/help-circle.svg">
+    <h3>فقه وأسئلة</h3>
+  </div>
+
+  <div class="card">
+    <img src="https://cdn.jsdelivr.net/npm/lucide-static/icons/moon.svg">
+    <h3>مواقيت الصلاة</h3>
+  </div>
+</main>
+
+<footer>© تطبيق زاد رمضان</footer>
 
 <script>
-/* ===== Theme ===== */
-function toggleTheme() {
-  const body = document.body;
-  if (body.getAttribute('data-theme') === 'light') {
-    body.removeAttribute('data-theme');
-    localStorage.setItem('theme', 'green');
-  } else {
-    body.setAttribute('data-theme', 'light');
-    localStorage.setItem('theme', 'light');
+/* ========= Theme ========= */
+function toggleTheme(){
+  const b=document.body;
+  if(b.dataset.theme==="light"){
+    b.removeAttribute("data-theme");
+    localStorage.setItem("theme","green");
+  }else{
+    b.dataset.theme="light";
+    localStorage.setItem("theme","light");
   }
 }
-
-if (localStorage.getItem('theme') === 'light') {
-  document.body.setAttribute('data-theme', 'light');
+if(localStorage.getItem("theme")==="light"){
+  document.body.dataset.theme="light";
 }
 
-/* ===== App ===== */
-const categoryData = {
-  Prophets: { name: "قصص الأنبياء", icon: "🕋" },
-  sahaba: { name: "قصص الصحابة", icon: "🧕" },
-  lessons: { name: "قصص العبرة", icon: "🌱" },
-  quran: { name: "قصص القرآن", icon: "📖" }
-};
+/* ========= Navigation ========= */
+function go(p){setTimeout(()=>location.href=p,200)}
 
-let appData = {
-  currentStories: [],
-  currentStoryIndex: -1
-};
+/* ========= Daily Content ========= */
+let dayIndex=Math.floor(Date.now()/86400000);
 
-fetch('data/stories/categories.json')
-  .then(r => r.json())
-  .then(data => displayCategories(data));
-
-function displayCategories(data) {
-  const container = document.getElementById('categoriesList');
-  Object.keys(categoryData).forEach(id => {
-    if (!data[id]) return;
-    const div = document.createElement('div');
-    div.className = 'card';
-    div.innerHTML = `
-      <h3>${categoryData[id].icon} ${categoryData[id].name}</h3>
-      <p style="color:var(--muted)">${data[id].length} قصة</p>
-    `;
-    div.onclick = () => showStories(id, data[id]);
-    container.appendChild(div);
-  });
-}
-
-function showStories(id, stories) {
-  appData.currentStories = stories;
-  document.getElementById('sectionTitle').textContent = categoryData[id].name;
-  showPage('storiesPage');
-
-  const container = document.getElementById('storiesList');
-  container.innerHTML = '';
-  stories.forEach((s, i) => {
-    const div = document.createElement('div');
-    div.className = 'card';
-    div.innerHTML = `<h3>📄 ${s.title}</h3>`;
-    div.onclick = () => loadStory(s.file, i);
-    container.appendChild(div);
-  });
-}
-
-function loadStory(file, index) {
-  appData.currentStoryIndex = index;
-  showPage('storyPage');
-  document.getElementById('loading').classList.remove('hidden');
-  document.getElementById('storyContent').innerHTML = '';
-
-  fetch('data/stories/' + file)
-    .then(r => r.json())
-    .then(d => {
-      document.getElementById('loading').classList.add('hidden');
-      document.getElementById('storyTitle').textContent = d.title;
-      d.content.forEach(p => {
-        const el = document.createElement('p');
-        el.textContent = p;
-        document.getElementById('storyContent').appendChild(el);
-      });
-    });
-}
-
-function loadPreviousStory() {
-  if (appData.currentStoryIndex > 0)
-    loadStory(appData.currentStories[appData.currentStoryIndex - 1].file, appData.currentStoryIndex - 1);
-}
-
-function loadNextStory() {
-  if (appData.currentStoryIndex < appData.currentStories.length - 1)
-    loadStory(appData.currentStories[appData.currentStoryIndex + 1].file, appData.currentStoryIndex + 1);
-}
-
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
+fetch("daily.json")
+.then(r=>r.json())
+.then(data=>{
+  const day=data[dayIndex % data.length];
+  let i=0;
+  setInterval(()=>{
+    const item=day.items[i%day.items.length];
+    document.getElementById("dailyTitle").textContent=item.title;
+    document.getElementById("dailyText").textContent=item.text;
+    i++;
+  },10000);
+});
 </script>
 
 </body>
-    </html>
+</html>
