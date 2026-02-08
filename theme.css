@@ -1,194 +1,121 @@
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Amiri:wght@400;700&display=swap');
 
-:root {
-  --font-ui: 'Cairo', sans-serif;
-  --font-content: 'Amiri', serif;
-  --transition: all .3s ease;
+/* ================== Variables ================== */
+:root{
+  --font-ui:'Cairo',sans-serif;
+  --font-content:'Amiri',serif;
+  --transition:.3s ease;
+
+  /* Green Theme */
+  --bg:#0f2a24;
+  --bg-grad:#0b1f1a;
+  --card:#163b33;
+  --card-hover:#1c4a40;
+  --primary:#d4af37;
+  --text:#f5f5f5;
+  --muted:#cfd8d3;
 }
 
-/* ================== الثيم الأخضر ================== */
-:root,
-[data-theme="green"] {
-  --bg: #0f2a24;
-  --surface: #163b33;
-  --surface-hover: #1c4a40;
-  --primary: #d4af37;
-  --text: #ffffff;
-  --muted: #cfd8d3;
-  --danger: #ff6b6b;
-  --border: rgba(255,255,255,.1);
-}
-
-/* ================== الثيم الأبيض ================== */
-[data-theme="light"] {
-  --bg: #f7f7f7;
-  --surface: #ffffff;
-  --surface-hover: #f0f0f0;
-  --primary: #2e7d32;
-  --text: #1f2933;
-  --muted: #6b7280;
-  --danger: #d32f2f;
-  --border: rgba(0,0,0,.1);
+[data-theme="light"]{
+  --bg:#f7f7f7;
+  --bg-grad:#ffffff;
+  --card:#ffffff;
+  --card-hover:#f0f0f0;
+  --primary:#2e7d32;
+  --text:#1f2933;
+  --muted:#6b7280;
 }
 
 /* ================== Base ================== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:var(--font-ui);
+  background:linear-gradient(180deg,var(--bg),var(--bg-grad));
+  color:var(--text);
+  min-height:100vh;
+  padding-top:60px; /* مساحة البار */
 }
 
-body {
-  font-family: var(--font-ui);
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
+/* ================== Top Bar (ثابت لكل الصفحات) ================== */
+.top-bar{
+  position:fixed;
+  top:0;right:0;left:0;
+  height:60px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 16px;
+  background:var(--card);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  z-index:1000;
 }
 
-/* ================== Top Bar ================== */
-.top-bar {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 16px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+.top-title{
+  font-family:var(--font-content);
+  font-size:20px;
+  font-weight:700;
+  color:var(--primary);
 }
 
-.top-title {
-  font-weight: 700;
-  font-size: 18px;
-  color: var(--primary);
+.icon-btn{
+  background:none;
+  border:none;
+  font-size:22px;
+  cursor:pointer;
+  color:var(--text);
+  transition:var(--transition);
+}
+.icon-btn:hover{color:var(--primary)}
+
+/* ================== Layout ================== */
+header{text-align:center;padding:20px}
+header h1{font-family:var(--font-content);color:var(--primary)}
+header p{color:var(--muted);font-size:14px}
+
+.container{
+  padding:16px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:14px;
 }
 
-.icon-btn {
-  background: transparent;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: var(--text);
-  transition: var(--transition);
+.card{
+  background:var(--card);
+  border-radius:16px;
+  padding:18px 14px;
+  text-align:center;
+  cursor:pointer;
+  transition:var(--transition);
+}
+.card:hover{
+  background:var(--card-hover);
+  transform:translateY(-6px);
 }
 
-.icon-btn:hover {
-  color: var(--primary);
+.card img{
+  width:36px;
+  height:36px;
+  margin-bottom:10px;
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,.4));
 }
 
-/* ================== Pages ================== */
-.page {
-  display: none;
-  padding: 16px;
-  max-width: 900px;
-  margin: auto;
+.card h3{font-size:16px}
+.card p{font-size:12px;color:var(--muted);margin-top:6px}
+
+/* ================== Daily ================== */
+.daily{
+  margin:20px 16px;
+  background:linear-gradient(135deg,#2fa38c,#1d6f60);
+  border-radius:18px;
+  padding:18px;
+  color:#fff;
+}
+.daily h2{margin-bottom:8px}
+.daily blockquote{
+  font-family:var(--font-content);
+  font-size:18px;
+  line-height:1.7;
 }
 
-.page.active {
-  display: block;
-}
-
-/* ================== Header ================== */
-.main-header {
-  text-align: center;
-  padding: 20px 0;
-  margin-bottom: 20px;
-  border-bottom: 2px solid var(--primary);
-  color: var(--primary);
-}
-
-/* ================== Cards ================== */
-.list {
-  display: grid;
-  gap: 12px;
-}
-
-.card {
-  background: var(--surface);
-  padding: 16px;
-  border-radius: 12px;
-  cursor: pointer;
-  border: 1px solid transparent;
-  transition: var(--transition);
-}
-
-.card:hover {
-  background: var(--surface-hover);
-  transform: translateY(-3px);
-  border-color: var(--primary);
-}
-
-.card h3 {
-  color: var(--primary);
-  margin-bottom: 6px;
-}
-
-/* ================== Buttons ================== */
-.back-btn {
-  background: none;
-  border: none;
-  color: var(--muted);
-  cursor: pointer;
-  margin-bottom: 15px;
-  font-size: 16px;
-}
-
-.back-btn:hover {
-  color: var(--primary);
-}
-
-.nav-links {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 30px;
-}
-
-.nav-btn {
-  background: var(--surface);
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  color: var(--text);
-  cursor: pointer;
-}
-
-.nav-btn:hover {
-  background: var(--surface-hover);
-}
-
-/* ================== Content ================== */
-.story-content {
-  font-family: var(--font-content);
-  font-size: 20px;
-  line-height: 1.8;
-}
-
-.story-content p {
-  margin-bottom: 20px;
-}
-
-/* ================== States ================== */
-.loading,
-.error {
-  text-align: center;
-  padding: 30px;
-}
-
-.error {
-  color: var(--danger);
-  border: 1px solid var(--danger);
-  border-radius: 12px;
-}
-
-.hidden {
-  display: none;
-}
-
-/* ================== Mobile ================== */
-@media (max-width: 600px) {
-  .story-content {
-    font-size: 18px;
-  }
-}
+/* ================== Footer ================== */
+footer{text-align:center;font-size:12px;color:var(--muted);margin:24px 0}
