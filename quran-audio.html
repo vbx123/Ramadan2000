@@ -1,115 +1,48 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>القرآن المسموع</title>
 
-<title>القرآن المسموع</title>
+  <!-- CSS الموحد -->
+  <link rel="stylesheet" href="theme.css">
 
-<style>
-body {
-  margin: 0;
-  font-family: "Amiri", serif;
-  background: #f4fbf6;
-  color: #1b4332;
-}
-
-/* ===== Header ===== */
-header {
-  background: #2d6a4f;
-  color: #fff;
-  padding: 14px;
-  text-align: center;
-  font-size: 20px;
-}
-
-/* ===== Search ===== */
-.search {
-  width: 92%;
-  margin: 10px auto;
-  display: block;
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-}
-
-/* ===== Readers ===== */
-.readers {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  padding: 10px;
-}
-
-.reader-card {
-  width: 45%;
-  background: #fff;
-  border-radius: 15px;
-  margin-bottom: 12px;
-  text-align: center;
-  padding: 10px;
-  box-shadow: 0 3px 8px rgba(0,0,0,.1);
-}
-
-.reader-card img {
-  width: 100%;
-  border-radius: 12px;
-}
-
-/* ===== Surahs ===== */
-.surahs {
-  padding: 10px;
-}
-
-.surah {
-  background: #fff;
-  margin-bottom: 8px;
-  padding: 12px;
-  border-radius: 12px;
-  text-align: center;
-  font-size: 18px;
-  box-shadow: 0 2px 6px rgba(0,0,0,.1);
-}
-
-/* ===== Audio Player ===== */
-.audio-player {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: #1b4332;
-  color: #fff;
-  padding: 10px;
-  display: none;
-}
-
-.audio-player p {
-  margin: 5px 0;
-  font-size: 14px;
-  text-align: center;
-}
-
-audio {
-  width: 100%;
-}
-</style>
+  <!-- أيقونات -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@0.344.0/font/lucide.css">
 </head>
 
 <body>
 
-<header id="pageTitle">القرآن المسموع</header>
+<!-- ===== Top Bar ===== -->
+<div class="top-bar">
+  <button class="icon-btn" onclick="toggleTheme()" title="تغيير الثيم">
+    <i class="lucide lucide-sun-moon"></i>
+  </button>
 
+  <div class="top-title" id="pageTitle">القرآن المسموع</div>
+
+  <button class="icon-btn" onclick="history.back()" title="رجوع">
+    <i class="lucide lucide-arrow-right"></i>
+  </button>
+</div>
+
+<!-- ===== Search ===== -->
 <input type="text" class="search" placeholder="ابحث">
 
+<!-- ===== Readers ===== -->
 <div class="readers" id="readers"></div>
+
+<!-- ===== Surahs ===== -->
 <div class="surahs" id="surahs" style="display:none"></div>
 
+<!-- ===== Audio Player ===== -->
 <div class="audio-player" id="player">
   <p id="nowPlaying"></p>
   <audio id="audio" controls></audio>
 </div>
 
+<!-- ===== Scripts ===== -->
 <script>
 let currentReader = null;
 
@@ -173,6 +106,22 @@ function playSurah(surah) {
     `${surah.name} – ${currentReader.name}`;
 
   document.getElementById("player").style.display = "block";
+}
+
+// ===== Theme =====
+function toggleTheme(){
+  const b=document.body;
+  if(b.dataset.theme==="light"){
+    b.removeAttribute("data-theme");
+    localStorage.setItem("theme","green");
+  }else{
+    b.dataset.theme="light";
+    localStorage.setItem("theme","light");
+  }
+}
+
+if(localStorage.getItem("theme")==="light"){
+  document.body.dataset.theme="light";
 }
 </script>
 
