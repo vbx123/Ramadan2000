@@ -5,10 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>القرآن المسموع</title>
 
-  <!-- CSS الموحد -->
   <link rel="stylesheet" href="theme.css">
-
-  <!-- أيقونات -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@0.344.0/font/lucide.css">
 </head>
 
@@ -16,114 +13,93 @@
 
 <!-- ===== Top Bar ===== -->
 <div class="top-bar">
-  <button class="icon-btn" onclick="toggleTheme()" title="تغيير الثيم">
+  <button class="icon-btn" onclick="toggleTheme()">
     <i class="lucide lucide-sun-moon"></i>
   </button>
 
   <div class="top-title" id="pageTitle">القرآن المسموع</div>
 
-  <button class="icon-btn" onclick="history.back()" title="رجوع">
+  <button class="icon-btn" onclick="history.back()">
     <i class="lucide lucide-arrow-right"></i>
   </button>
 </div>
 
-<!-- ===== Search ===== -->
-<input type="text" class="search" placeholder="ابحث">
+<!-- ===== Readers Grid ===== -->
+<div class="readers-grid" id="readers"></div>
 
-<!-- ===== Readers ===== -->
-<div class="readers" id="readers"></div>
+<!-- ===== Surahs List ===== -->
+<div class="surahs-list" id="surahs" style="display:none"></div>
 
-<!-- ===== Surahs ===== -->
-<div class="surahs" id="surahs" style="display:none"></div>
-
-<!-- ===== Audio Player ===== -->
-<div class="audio-player" id="player">
-  <p id="nowPlaying"></p>
+<!-- ===== Bottom Player ===== -->
+<div class="player-bar" id="player">
+  <div class="player-title" id="nowPlaying"></div>
   <audio id="audio" controls></audio>
 </div>
 
-<!-- ===== Scripts ===== -->
 <script>
 let currentReader = null;
 
 // ===== Load Readers =====
 fetch("data/quran/audible/Readers.json")
-.then(res => res.json())
+.then(r => r.json())
 .then(data => {
-  const readers = document.getElementById("readers");
+  const box = document.getElementById("readers");
   data.forEach(r => {
-    const card = document.createElement("div");
-    card.className = "reader-card";
-    card.innerHTML = `
+    const div = document.createElement("div");
+    div.className = "reader-box";
+    div.innerHTML = `
       <img src="data/quran/audible/${r.image}">
-      <p>${r.name}</p>
+      <span>${r.name}</span>
     `;
-    card.onclick = () => selectReader(r);
-    readers.appendChild(card);
+    div.onclick = () => selectReader(r);
+    box.appendChild(div);
   });
 });
 
 // ===== Select Reader =====
-function selectReader(reader) {
+function selectReader(reader){
   currentReader = reader;
   document.getElementById("readers").style.display = "none";
-  document.getElementById("surahs").style.display = "block";
+  document.getElementById("surahs").style.display = "flex";
   document.getElementById("pageTitle").innerText = reader.name;
   loadSurahs();
 }
 
 // ===== Load Surahs =====
-function loadSurahs() {
+function loadSurahs(){
   fetch("data/quran/audible/Titles.json")
-  .then(res => {
-    if (!res.ok) throw new Error();
-    return res.json();
-  })
+  .then(r => r.json())
   .then(data => {
     const box = document.getElementById("surahs");
     box.innerHTML = "";
     data.forEach(s => {
-      const div = document.createElement("div");
-      div.className = "surah";
-      div.innerText = s.name;
-      div.onclick = () => playSurah(s);
-      box.appendChild(div);
+      const item = document.createElement("div");
+      item.className = "surah-item";
+      item.innerText = s.name;
+      item.onclick = () => playSurah(s);
+      box.appendChild(item);
     });
-  })
-  .catch(() => {
-    document.getElementById("surahs").innerHTML =
-      "تعذر الوصول، يرجى إعادة التشغيل وإذا استمرت المشكلة تواصل مع الإدارة";
   });
 }
 
 // ===== Play =====
-function playSurah(surah) {
+function playSurah(s){
   const audio = document.getElementById("audio");
-  audio.src = currentReader.baseUrl + surah.id + ".mp3";
+  audio.src = currentReader.baseUrl + s.id + ".mp3";
   audio.play();
 
   document.getElementById("nowPlaying").innerText =
-    `${surah.name} – ${currentReader.name}`;
+    s.name + " – " + currentReader.name;
 
-  document.getElementById("player").style.display = "block";
+  document.getElementById("player").classList.add("show");
 }
 
 // ===== Theme =====
 function toggleTheme(){
-  const b=document.body;
-  if(b.dataset.theme==="light"){
-    b.removeAttribute("data-theme");
-    localStorage.setItem("theme","green");
-  }else{
-    b.dataset.theme="light";
-    localStorage.setItem("theme","light");
-  }
-}
-
-if(localStorage.getItem("theme")==="light"){
-  document.body.dataset.theme="light";
+  document.body.dataset.theme =
+    document.body.dataset.theme === "light" ? "" : "light";
 }
 </script>
 
 </body>
-</html>
+  </html>
