@@ -106,7 +106,7 @@
         function loadCats() {
             isMain = true;
             document.getElementById('titleText').textContent = "الأذكار";
-            fetch('Data/Remember/Titles.json')
+            fetch('data/Remember/Titles.json')
                 .then(r => r.json())
                 .then(data => {
                     document.getElementById('mainBox').innerHTML = data.map(c => `
@@ -121,7 +121,7 @@
         function loadData(id, name) {
             isMain = false;
             document.getElementById('titleText').textContent = name;
-            fetch(`Data/Remember/${id}.json`)
+            fetch(`data/Remember/${id}.json`)
                 .then(r => r.json())
                 .then(data => {
                     const content = data.content || data;
