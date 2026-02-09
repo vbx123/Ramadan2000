@@ -6,82 +6,13 @@
     <title>حصن المسلم - الأذكار</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="theme.css">
-    
-    <style>
-        /* إضافات الـ CSS الخاصة بصفحة الأذكار */
-        .zekr-card {
-            background: var(--card);
-            border-radius: 18px;
-            padding: 20px;
-            margin-bottom: 15px;
-            position: relative;
-            cursor: pointer;
-            transition: 0.3s;
-            border: 2px solid transparent;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .zekr-card:active { transform: scale(0.98); }
-        .zekr-done { border-color: var(--primary); background: var(--card-hover); }
-        
-        .zekr-text {
-            font-family: var(--font-content);
-            font-size: 22px;
-            line-height: 1.8;
-            margin-bottom: 15px;
-            display: block;
-        }
-
-        .counter-box {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 10px;
-        }
-
-        .progress-ring { width: 70px; height: 70px; position: relative; }
-        .progress-ring svg { transform: rotate(-90deg); width: 70px; height: 70px; }
-        .progress-ring circle {
-            fill: none;
-            stroke-width: 6;
-            stroke-linecap: round;
-            transition: stroke-dashoffset 0.3s ease;
-        }
-        .bg-circle { stroke: rgba(255,255,255,0.1); }
-        .bar-circle { stroke: var(--primary); }
-
-        .number-overlay {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            font-weight: bold;
-            font-size: 20px;
-        }
-
-        .source-hint {
-            text-align: center;
-            font-size: 11px;
-            color: var(--muted);
-            margin-top: 10px;
-        }
-
-        #hadithModal {
-            display: none; position: fixed; bottom: 0; left: 0; right: 0;
-            background: var(--card); padding: 25px; border-radius: 25px 25px 0 0;
-            z-index: 2000; box-shadow: 0 -5px 25px rgba(0,0,0,0.5);
-            border-top: 3px solid var(--primary);
-        }
-        #hadithModal.active { display: block; animation: slideUp 0.3s ease; }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-    </style>
 </head>
 <body>
 
     <div class="top-bar">
-        <button class="icon-btn" onclick="goBack()">→</button>
+        <button class="icon-btn" onclick="goBack()" id="backBtn">→</button>
         <div class="top-title" id="topTitle">الأذكار</div>
-        <div style="width: 40px;"></div> 
-    </div>
+        <div style="width: 40px;"></div> </div>
 
     <div class="container" id="mainContainer">
         </div>
@@ -89,43 +20,53 @@
     <div id="hadithModal">
         <h3 style="color:var(--primary); margin-bottom:15px; text-align:center;">مصدر الذكر وفضله</h3>
         <p id="hadithContent" style="font-family:var(--font-content); font-size:18px; line-height:1.6; text-align:justify;"></p>
-        <button class="surah-item" style="width:100%; margin-top:20px; background:var(--primary); color:#000;" onclick="closeModal()">فهمت</button>
+        <button class="surah-item" style="width:100%; margin-top:20px; background:var(--primary); color:#000; font-weight:bold;" onclick="closeModal()">إغلاق</button>
     </div>
 
     <script>
-        let currentLevel = 'categories'; // categories or items
+        let currentLevel = 'categories';
         let longPressTimer;
 
-        // 1. جلب العناوين عند البداية
-        window.onload = loadCategories;
+        // 1. إدارة الثيم الموحد
+        function applySavedTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }
 
+        window.onload = () => {
+            applySavedTheme();
+            loadCategories();
+        };
+
+        // 2. تحميل الأقسام من Titles.json
         function loadCategories() {
             currentLevel = 'categories';
             document.getElementById('topTitle').textContent = "الأذكار";
             const container = document.getElementById('mainContainer');
             
-            fetch('data/Remember/Titles.json')
+            fetch('Data/Remember/Titles.json')
                 .then(res => res.json())
                 .then(data => {
+                    // عرض الأقسام بشكل طولي (قائمة)
                     container.innerHTML = data.map(cat => `
-                        <div class="card" onclick="loadAthkar('${cat.id}', '${cat.name}')">
-                            <img src="${cat.icon}" style="width:50px; height:50px; margin-bottom:10px;">
-                            <h3>${cat.name}</h3>
+                        <div class="zekr-card" onclick="loadAthkar('${cat.id}', '${cat.name}')" style="display: flex; align-items: center; gap: 20px;">
+                            <img src="${cat.icon}" style="width:45px; height:45px; object-fit: contain;">
+                            <h3 style="margin:0;">${cat.name}</h3>
                         </div>
                     `).join('');
-                });
+                })
+                .catch(err => console.error("خطأ في تحميل العناوين:", err));
         }
 
-        // 2. جلب أذكار القسم المختار
+        // 3. تحميل الأذكار من ملف القسم المختص
         function loadAthkar(fileId, title) {
             currentLevel = 'items';
             document.getElementById('topTitle').textContent = title;
             const container = document.getElementById('mainContainer');
             
-            fetch(`data/Remember/${fileId}.json`)
+            fetch(`Data/Remember/${fileId}.json`)
                 .then(res => res.json())
                 .then(data => {
-                    // نفترض أن ملف الذكر يحتوي على مصفوفة مباشرة أو كائن به content
                     const list = data.content || data;
                     container.innerHTML = list.map((z, index) => {
                         const radius = 30;
@@ -156,10 +97,12 @@
                         </div>
                         `;
                     }).join('');
-                });
+                    window.scrollTo(0,0);
+                })
+                .catch(err => console.error("خطأ في تحميل الأذكار:", err));
         }
 
-        // 3. منطق العداد
+        // 4. منطق العداد التفاعلي
         function handleTap(idx, max) {
             const card = document.getElementById(`zekr-${idx}`);
             const bar = document.getElementById(`bar-${idx}`);
@@ -176,32 +119,35 @@
                 const offset = circum - (current / max) * circum;
                 bar.style.strokeDashoffset = offset;
                 
-                num.textContent = max - current;
+                // تحديث الرقم المتبقي
+                num.textContent = (max - current) === 0 ? "✓" : (max - current);
 
                 if (current === max) {
                     card.classList.add('zekr-done');
-                    num.innerHTML = "✓";
-                    if(navigator.vibrate) navigator.vibrate(40);
+                    if(navigator.vibrate) navigator.vibrate(50); // اهتزاز بسيط
                 }
             }
         }
 
-        // 4. منطق الضغط المطول
+        // 5. منطق الضغط المطول لإظهار المصدر
         function startPress(source) {
             longPressTimer = setTimeout(() => {
                 document.getElementById('hadithContent').textContent = source;
                 document.getElementById('hadithModal').classList.add('active');
-            }, 600);
+            }, 700);
         }
 
         function endPress() { clearTimeout(longPressTimer); }
         function closeModal() { document.getElementById('hadithModal').classList.remove('active'); }
 
-        // 5. العودة
+        // 6. زر العودة الذكي
         function goBack() {
-            if (currentLevel === 'items') loadCategories();
-            else window.history.back();
+            if (currentLevel === 'items') {
+                loadCategories();
+            } else {
+                window.history.back();
+            }
         }
     </script>
 </body>
-  </html>
+</html>
