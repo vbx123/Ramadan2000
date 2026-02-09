@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المصحف الشريف - قراءة</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* استيراد أساسيات الـ CSS الخاصة بك */
+        :root {
+            --font-ui: 'Cairo', sans-serif;
+            --font-quran: 'Amiri', serif;
+            --bg: #0f2a24; --bg-grad: #0b1f1a;
+            --card: #163b33; --card-hover: #1c4a40;
+            --primary: #d4af37; --text: #f5f5f5; --muted: #cfd8d3;
+            --reader-font-size: 26px; --reader-bg: transparent; --reader-text: inherit;
+        }
+
+        [data-theme="light"] {
+            --bg: #f7f7f7; --bg-grad: #ffffff;
+            --card: #ffffff; --card-hover: #f0f0f0;
+            --primary: #2e7d32; --text: #1f2933; --muted: #6b7280;
+        }
+
+        body {
+            font-family: var(--font-ui);
+            background: linear-gradient(180deg, var(--bg), var(--bg-grad));
+            color: var(--text);
+            min-height: 100vh;
+            padding-top: 70px;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            position: fixed; top: 0; right: 0; left: 0; height: 60px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 16px; background: var(--card); z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,.1);
+        }
+
+        .icon-btn { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--text); }
+
+        /* Container & List */
+        .container { padding: 16px; max-width: 900px; margin: 0 auto; }
+        
+        .surah-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+        
+        .surah-card {
+            background: var(--card); padding: 15px; border-radius: 12px;
+            text-align: center; cursor: pointer; transition: 0.3s;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .surah-card:hover { background: var(--card-hover); transform: scale(1.05); border-color: var(--primary); }
+        .surah-card span { display: block; font-size: 12px; color: var(--primary); margin-bottom: 5px; }
+
+        /* Reading Area */
+        #quranReader { display: none; }
+        .quran-content {
+            font-family: var(--font-quran);
+            font-size: var(--reader-font-size);
+            background: var(--reader-bg);
+            color: var(--reader-text);
+            line-height: 2.2;
+            text-align: center;
+            padding: 25px;
+            border-radius: 15px;
+            direction: rtl;
+        }
+
+        .ayah-num {
+            display: inline-flex;
+            width: 30px; height: 30px;
+            background: url('https://cdn-icons-png.flaticon.com/512/4406/4406213.png') no-repeat center;
+            background-size: contain;
+            font-size: 12px; font-family: var(--font-ui);
+            align-items: center; justify-content: center;
+            margin: 0 5px; color: var(--primary);
+        }
+
+        /* Modal Settings */
+        .modal {
+            display: none; position: fixed; bottom: 0; left: 0; right: 0;
+            background: var(--card); padding: 20px; border-radius: 20px 20px 0 0;
+            z-index: 2000; box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+        }
+        .modal.active { display: block; animation: slideUp 0.3s; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        .settings-row { margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; }
+        .dot { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 1px solid #888; }
+        
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <button class="icon-btn" onclick="goBack()" id="backBtn">✕</button>
+        <div id="topTitle" style="font-weight: bold; color: var(--primary);">المصحف الشريف</div>
+        <button class="icon-btn" id="actionBtn" onclick="toggleTheme()">🌓</button>
+    </div>
+
+    <div id="listPage" class="container">
+        <div class="surah-list" id="surahListContainer">
+            </div>
+    </div>
+
+    <div id="quranReader" class="container">
+        <div class="quran-content" id="ayahsContainer">
+            </div>
+    </div>
+
+    <div id="readerSettings" class="modal">
+        <h4 style="text-align:center; margin-bottom:15px;">إعدادات المصحف</h4>
+        <div class="settings-row">
+            <label>حجم الخط</label>
+            <input type="range" min="20" max="50" value="26" oninput="updateFont(this.value)">
+        </div>
+        <div class="settings-row">
+            <label>خلفية القراءة</label>
+            <div style="display:flex; gap:10px;">
+                <div class="dot" style="background:#f4ecd8;" onclick="setMode('#f4ecd8', '#222')"></div>
+                <div class="dot" style="background:#fff;" onclick="setMode('#fff', '#000')"></div>
+                <div class="dot" style="background:#0f2a24;" onclick="setMode('transparent', 'inherit')"></div>
+            </div>
+        </div>
+        <button class="surah-card" style="width:100%;" onclick="closeSettings()">حفظ وإغلاق</button>
+    </div>
+
+    <script>
+        let surahsData = [];
+
+        // 1. تحميل قائمة السور
+        window.onload = () => {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+
+            fetch('data/quran/reading/Titles.json')
+                .then(res => res.json())
+                .then(data => {
+                    surahsData = data;
+                    renderList();
+                });
+        };
+
+        function renderList() {
+            const container = document.getElementById('surahListContainer');
+            surahsData.forEach(surah => {
+                const div = document.createElement('div');
+                div.className = 'surah-card';
+                div.innerHTML = `<span>${surah.id}</span> <strong>${surah.name}</strong>`;
+                div.onclick = () => loadSurah(surah);
+                container.appendChild(div);
+            });
+        }
+
+        // 2. تحميل سورة معينة
+        function loadSurah(surah) {
+            document.getElementById('listPage').style.display = 'none';
+            document.getElementById('quranReader').style.display = 'block';
+            document.getElementById('topTitle').textContent = "سورة " + surah.name;
+            document.getElementById('backBtn').textContent = "→";
+            
+            // تحويل زر الثيم لترس الإعدادات
+            const actionBtn = document.getElementById('actionBtn');
+            actionBtn.innerHTML = "⚙️";
+            actionBtn.onclick = openSettings;
+
+            fetch(`data/quran/reading/${surah.file}`)
+                .then(res => res.json())
+                .then(data => {
+                    renderAyahs(data.verses); // افترضنا أن ملف السورة يحتوي على مصفوفة verses
+                });
+        }
+
+        function renderAyahs(verses) {
+            const container = document.getElementById('ayahsContainer');
+            container.innerHTML = verses.map((v, i) => `
+                ${v.text} <span class="ayah-num">${v.number}</span>
+            `).join(' ');
+        }
+
+        // 3. الإعدادات
+        function openSettings() { document.getElementById('readerSettings').classList.add('active'); }
+        function closeSettings() { document.getElementById('readerSettings').classList.remove('active'); }
+
+        function updateFont(v) { document.documentElement.style.setProperty('--reader-font-size', v + 'px'); }
+        function setMode(bg, text) {
+            document.documentElement.style.setProperty('--reader-bg', bg);
+            document.documentElement.style.setProperty('--reader-text', text);
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        }
+
+        function goBack() {
+            if (document.getElementById('quranReader').style.display === 'block') {
+                document.getElementById('quranReader').style.display = 'none';
+                document.getElementById('listPage').style.display = 'block';
+                document.getElementById('topTitle').textContent = "المصحف الشريف";
+                document.getElementById('backBtn').textContent = "✕";
+                const actionBtn = document.getElementById('actionBtn');
+                actionBtn.innerHTML = "🌓";
+                actionBtn.onclick = toggleTheme;
+            } else {
+                window.history.back();
+            }
+        }
+    </script>
+</body>
+  </html>
