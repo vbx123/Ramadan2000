@@ -241,3 +241,125 @@ input[type="range"] { accent-color: var(--primary); width: 60%; }
   padding: 15px;
   border-radius: 10px;
   }
+
+/* ================== Athkar Page Styles ================== */
+
+/* بطاقة الذكر */
+.zekr-card {
+    background: var(--card);
+    border-radius: 18px;
+    padding: 20px;
+    margin-bottom: 15px;
+    position: relative;
+    cursor: pointer;
+    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid transparent;
+    user-select: none; /* لمنع تحديد النص أثناء الضغط */
+    -webkit-tap-highlight-color: transparent; /* إزالة لون الوميض في الموبايل */
+}
+
+/* تأثير عند الضغط */
+.zekr-card:active {
+    transform: scale(0.97);
+}
+
+/* حالة اكتمال الذكر */
+.zekr-done {
+    border-color: var(--primary);
+    background: var(--card-hover);
+    opacity: 0.8;
+}
+
+/* نص الذكر */
+.zekr-text {
+    font-family: var(--font-content);
+    font-size: 22px;
+    line-height: 1.8;
+    margin-bottom: 15px;
+    display: block;
+    color: var(--text);
+}
+
+/* حاوية العداد الدائري */
+.counter-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.progress-ring {
+    width: 70px;
+    height: 70px;
+    position: relative;
+}
+
+.progress-ring svg {
+    transform: rotate(-90deg); /* لبدء العداد من الأعلى */
+    width: 70px;
+    height: 70px;
+}
+
+.progress-ring circle {
+    fill: none;
+    stroke-width: 6;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.3s ease;
+}
+
+/* الدائرة الخلفية الباهتة */
+.bg-circle {
+    stroke: rgba(255, 255, 255, 0.1);
+}
+
+/* شريط التقدم الملون */
+.bar-circle {
+    stroke: var(--primary);
+}
+
+/* الرقم الموجود وسط الدائرة */
+.number-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+    font-size: 20px;
+    font-family: var(--font-ui);
+    color: var(--primary);
+}
+
+/* تلميح المصدر */
+.source-hint {
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 12px;
+    opacity: 0.7;
+}
+
+/* ديالوج (Modal) المصدر وفضل الذكر */
+#hadithModal {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--card);
+    padding: 25px;
+    border-radius: 25px 25px 0 0;
+    z-index: 2000;
+    box-shadow: 0 -5px 30px rgba(0, 0, 0, 0.6);
+    border-top: 3px solid var(--primary);
+}
+
+/* إظهار الديالوج بأنيميشن */
+#hadithModal.active {
+    display: block;
+    animation: slideUpAthkar 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+}
+
+@keyframes slideUpAthkar {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
