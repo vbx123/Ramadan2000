@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>القرآن المسموع</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>القرآن المسموع</title>
 
-  <link rel="stylesheet" href="theme.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@0.344.0/font/lucide.css">
+<link rel="stylesheet" href="theme.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@0.344.0/font/lucide.css">
+
 </head>
-
 <body>
 
 <!-- ===== Top Bar ===== -->
@@ -24,6 +24,9 @@
   </button>
 </div>
 
+<!-- ===== Search ===== -->
+<input type="text" id="search" class="search-input" placeholder="ابحث عن قارئ أو سورة" oninput="handleSearch(this.value)">
+
 <!-- ===== Readers Grid ===== -->
 <div class="readers-grid" id="readers"></div>
 
@@ -38,12 +41,20 @@
 
 <script>
 let currentReader = null;
+let readersData = [];
+let surahsData = [];
 
 // ===== Load Readers =====
 fetch("data/quran/audible/Readers.json")
 .then(r => r.json())
 .then(data => {
+  readersData = data;
+  renderReaders(data);
+});
+
+function renderReaders(data){
   const box = document.getElementById("readers");
+  box.innerHTML = "";
   data.forEach(r => {
     const div = document.createElement("div");
     div.className = "reader-box";
@@ -54,7 +65,7 @@ fetch("data/quran/audible/Readers.json")
     div.onclick = () => selectReader(r);
     box.appendChild(div);
   });
-});
+}
 
 // ===== Select Reader =====
 function selectReader(reader){
@@ -70,15 +81,20 @@ function loadSurahs(){
   fetch("data/quran/audible/Titles.json")
   .then(r => r.json())
   .then(data => {
-    const box = document.getElementById("surahs");
-    box.innerHTML = "";
-    data.forEach(s => {
-      const item = document.createElement("div");
-      item.className = "surah-item";
-      item.innerText = s.name;
-      item.onclick = () => playSurah(s);
-      box.appendChild(item);
-    });
+    surahsData = data;
+    renderSurahs(data);
+  });
+}
+
+function renderSurahs(data){
+  const box = document.getElementById("surahs");
+  box.innerHTML = "";
+  data.forEach(s => {
+    const div = document.createElement("div");
+    div.className = "surah-item";
+    div.innerText = s.name;
+    div.onclick = () => playSurah(s);
+    box.appendChild(div);
   });
 }
 
@@ -89,15 +105,39 @@ function playSurah(s){
   audio.play();
 
   document.getElementById("nowPlaying").innerText =
-    s.name + " – " + currentReader.name;
+    `${s.name} – ${currentReader.name}`;
 
   document.getElementById("player").classList.add("show");
 }
 
+// ===== Search =====
+function handleSearch(val){
+  val = val.trim();
+  if(!currentReader){
+    const filtered = readersData.filter(r => r.name.includes(val));
+    renderReaders(filtered);
+  } else {
+    const filtered = surahsData.filter(s => s.name.includes(val));
+    renderSurahs(filtered);
+  }
+}
+
 // ===== Theme =====
+(function(){
+  const theme = localStorage.getItem("theme");
+  if(theme){
+    document.body.dataset.theme = theme;
+  }
+})();
+
 function toggleTheme(){
-  document.body.dataset.theme =
-    document.body.dataset.theme === "light" ? "" : "light";
+  const newTheme = document.body.dataset.theme === "light" ? "" : "light";
+  document.body.dataset.theme = newTheme;
+  if(newTheme){
+    localStorage.setItem("theme", newTheme);
+  }else{
+    localStorage.removeItem("theme");
+  }
 }
 </script>
 
