@@ -1,258 +1,114 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>قصص الأنبياء والصحابة</title>
     
-    <!-- الخطوط -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="theme.css">
     
     <style>
-        :root {
-            --bg: #0f2a24;
-            --card: #163b33;
-            --primary: #d4af37;
-            --text: #ffffff;
-            --muted: #cfd8d3;
-            --hover: #1c4a40;
+        /* ستايلات خاصة فقط بمنطق الصفحات (Page Logic) وليست للهوية البصرية */
+        .page { display: none; min-height: 80vh; }
+        .page.active { display: block; }
+        .story-content { 
+            font-family: var(--font-content); 
+            font-size: 22px; 
+            line-height: 1.8; 
+            text-align: justify; 
+            padding: 10px;
         }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Cairo', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-        }
-        
-        /* إخفاء جميع الأقسام في البداية */
-        .page {
-            display: none;
-            padding: 16px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .page.active {
-            display: block;
-        }
-        
-        /* العنوان الرئيسي */
-        .main-header {
-            text-align: center;
-            padding: 20px 16px;
-            border-bottom: 2px solid var(--primary);
-            margin-bottom: 20px;
-            color: var(--primary);
-        }
-        
-        /* زر الرجوع */
-        .back-btn {
-            background: transparent;
-            border: none;
-            color: var(--muted);
-            font-size: 16px;
-            padding: 10px 0;
-            cursor: pointer;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .back-btn:hover {
-            color: var(--primary);
-        }
-        
-        /* قائمة الأقسام */
-        .category-list, .stories-list {
-            display: grid;
-            gap: 12px;
-        }
-        
-        /* عناصر القائمة */
-        .category-item, .story-item {
-            background: var(--card);
-            padding: 16px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid transparent;
-        }
-        
-        .category-item:hover, .story-item:hover {
-            background: var(--hover);
-            transform: translateY(-3px);
-            border-color: var(--primary);
-        }
-        
-        .category-item h3, .story-item h3 {
-            margin-bottom: 5px;
-            color: var(--primary);
-        }
-        
-        /* صفحة القصة */
-        .story-content {
-            font-family: 'Amiri', serif;
-            font-size: 20px;
-            line-height: 1.8;
-            text-align: justify;
-        }
-        
-        .story-content p {
-            margin-bottom: 20px;
-        }
-        
-        /* حالة التحميل */
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: var(--muted);
-            font-size: 18px;
-        }
-        
-        .loading.hidden {
-            display: none;
-        }
-        
-        /* رسالة الخطأ */
-        .error {
-            text-align: center;
-            padding: 40px;
-            color: #ff6b6b;
-            border: 1px solid #ff6b6b;
-            border-radius: 12px;
-            margin: 20px;
-        }
-        
-        .error.hidden {
-            display: none;
-        }
-        
-        /* روابط التنقل في الأسفل */
         .nav-links {
             display: flex;
             justify-content: space-between;
             margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid var(--card);
+            padding: 20px 0;
+            border-top: 1px solid rgba(255,255,255,0.1);
         }
-        
-        .nav-btn {
-            background: var(--card);
-            color: var(--text);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-family: 'Cairo', sans-serif;
-            transition: background 0.3s;
-        }
-        
-        .nav-btn:hover {
-            background: var(--hover);
-        }
-        
-        /* استجابة للشاشات الصغيرة */
-        @media (max-width: 600px) {
-            .page {
-                padding: 10px;
-            }
-            
-            .story-content {
-                font-size: 18px;
-                line-height: 1.7;
-            }
-            
-            .category-item, .story-item {
-                padding: 12px;
-            }
-        }
+        .error { color: #ff6b6b; text-align: center; padding: 20px; border: 1px dashed #ff6b6b; border-radius: 12px; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-<!-- الصفحة 1: قائمة الأقسام -->
-<div id="categoriesPage" class="page active">
-    <header class="main-header">
-        <h1>📖 قصص الأنبياء والصحابة</h1>
-        <p style="color: var(--muted); font-size: 14px; margin-top: 5px;">اختر القسم لعرض القصص</p>
-    </header>
-    
-    <div id="categoriesList" class="category-list">
-        <!-- سيتم تعبئة الأقسام هنا بالجافاسكريبت -->
-    </div>
-    
-    <div id="categoriesError" class="error hidden">
-        ⚠️ تعذر تحميل الأقسام
-    </div>
+<div class="top-bar">
+    <button class="icon-btn" onclick="goBackLogic()" id="backBtn">✕</button>
+    <div class="top-title" id="dynamicTitle">المكتبة الإسلامية</div>
+    <button class="icon-btn" onclick="toggleTheme()">🌓</button>
 </div>
 
-<!-- الصفحة 2: قائمة قصص القسم -->
-<div id="storiesPage" class="page">
-    <button class="back-btn" onclick="showPage('categoriesPage')">
-        ← الرجوع للأقسام
-    </button>
+<div id="categoriesPage" class="page active">
+    <header>
+        <h1>📖 قصص الأنبياء والصحابة</h1>
+        <p>اختر القسم لعرض القصص</p>
+    </header>
     
-    <header class="main-header">
+    <div id="categoriesList" class="container">
+        </div>
+    
+    <div id="categoriesError" class="error hidden">⚠️ تعذر تحميل الأقسام</div>
+</div>
+
+<div id="storiesPage" class="page">
+    <header>
         <h1 id="sectionTitle">قصص القسم</h1>
     </header>
     
-    <div id="storiesList" class="stories-list">
-        <!-- سيتم تعبئة القصص هنا -->
-    </div>
-    
-    <div id="storiesError" class="error hidden">
-        ⚠️ تعذر تحميل قصص هذا القسم
-    </div>
+    <div id="storiesList" class="container" style="grid-template-columns: 1fr;">
+        </div>
 </div>
 
-<!-- الصفحة 3: عرض القصة -->
 <div id="storyPage" class="page">
-    <button class="back-btn" onclick="showPage('storiesPage')">
-        ← الرجوع للقصص
-    </button>
-    
-    <header class="main-header">
+    <header>
         <h1 id="storyTitle">عنوان القصة</h1>
     </header>
     
-    <div id="loading" class="loading">
-        جاري تحميل القصة...
+    <div id="loading" style="text-align:center; padding:20px;">جاري التحميل...</div>
+    
+    <div class="container" style="display:block;">
+        <div id="storyContent" class="story-content"></div>
     </div>
     
-    <div id="storyContent" class="story-content">
-        <!-- سيتم تعبئة محتوى القصة هنا -->
-    </div>
-    
-    <div id="storyError" class="error hidden">
-        ⚠️ تعذر تحميل القصة
-    </div>
-    
-    <div class="nav-links">
-        <button class="nav-btn" onclick="loadPreviousStory()">القصة السابقة</button>
-        <button class="nav-btn" onclick="showPage('storiesPage')">قائمة القصص</button>
-        <button class="nav-btn" onclick="loadNextStory()">القصة التالية</button>
+    <div class="nav-links" style="padding: 16px;">
+        <button class="card" style="flex:1; margin:5px;" onclick="loadPreviousStory()">السابقة</button>
+        <button class="card" style="flex:1; margin:5px;" onclick="loadNextStory()">التالية</button>
     </div>
 </div>
 
+<footer>جميع الحقوق محفوظة &copy; 2024</footer>
+
 <script>
-    // بيانات التطبيق
+    // --- منطق الثيم والحفظ ---
+    function toggleTheme() {
+        const html = document.documentElement;
+        const current = html.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+    }
+
+    // تطبيق الثيم المحفوظ فور تحميل الصفحة
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
+    // --- منطق التنقل بين الصفحات ---
+    function goBackLogic() {
+        if (document.getElementById('storyPage').classList.contains('active')) {
+            showPage('storiesPage');
+        } else if (document.getElementById('storiesPage').classList.contains('active')) {
+            showPage('categoriesPage');
+        } else {
+            window.history.back(); // لو في الصفحة الرئيسية يرجع للموقع الأساسي
+        }
+    }
+
     let appData = {
         currentCategory: null,
-        currentCategoryId: null,
         currentStories: [],
         currentStoryIndex: -1,
         categories: {}
     };
 
-    // أسماء الأقسام بالعربية
     const categoryNames = {
         "Prophets": "قصص الأنبياء",
         "sahaba": "قصص الصحابة",
@@ -260,61 +116,39 @@
         "quran": "قصص القرآن"
     };
 
-    // عند تحميل الصفحة
-    window.addEventListener('DOMContentLoaded', function() {
-        loadCategories();
-    });
+    window.addEventListener('DOMContentLoaded', loadCategories);
 
-    // تحميل الأقسام
     function loadCategories() {
         fetch('data/stories/categories.json')
-            .then(response => {
-                if (!response.ok) throw new Error('Network error');
-                return response.json();
-            })
+            .then(res => res.json())
             .then(data => {
                 appData.categories = data;
                 displayCategories();
             })
-            .catch(error => {
-                console.error('Error loading categories:', error);
-                document.getElementById('categoriesError').classList.remove('hidden');
-            });
+            .catch(() => document.getElementById('categoriesError').classList.remove('hidden'));
     }
 
-    // عرض الأقسام
     function displayCategories() {
         const container = document.getElementById('categoriesList');
         container.innerHTML = '';
-        
         const order = ["Prophets", "sahaba", "lessons", "quran"];
         
-        order.forEach(categoryId => {
-            if (appData.categories[categoryId]) {
-                const category = document.createElement('div');
-                category.className = 'category-item';
-                category.innerHTML = `
-                    <h3>${categoryNames[categoryId] || categoryId}</h3>
-                    <p style="color: var(--muted); font-size: 14px;">
-                        ${appData.categories[categoryId].length} قصة
-                    </p>
+        order.forEach(id => {
+            if (appData.categories[id]) {
+                const item = document.createElement('div');
+                item.className = 'card';
+                item.innerHTML = `
+                    <h3>${categoryNames[id] || id}</h3>
+                    <p>${appData.categories[id].length} قصة</p>
                 `;
-                
-                category.addEventListener('click', () => {
-                    showStories(categoryId, appData.categories[categoryId]);
-                });
-                
-                container.appendChild(category);
+                item.onclick = () => showStories(id, appData.categories[id]);
+                container.appendChild(item);
             }
         });
     }
 
-    // عرض قصص القسم
     function showStories(categoryId, stories) {
-        appData.currentCategoryId = categoryId;
-        appData.currentCategory = stories;
         appData.currentStories = stories;
-        
         document.getElementById('sectionTitle').textContent = categoryNames[categoryId] || categoryId;
         showPage('storiesPage');
         
@@ -322,106 +156,56 @@
         container.innerHTML = '';
         
         stories.forEach((story, index) => {
-            const storyElement = document.createElement('div');
-            storyElement.className = 'story-item';
-            storyElement.innerHTML = `
-                <h3>${story.title}</h3>
-            `;
-            
-            storyElement.addEventListener('click', () => {
-                loadStory(story.file, index);
-            });
-            
-            container.appendChild(storyElement);
+            const el = document.createElement('div');
+            el.className = 'surah-item'; // استخدمنا استايل السور لأنه أنسب للقوائم
+            el.textContent = story.title;
+            el.onclick = () => loadStory(story.file, index);
+            container.appendChild(el);
         });
     }
 
-    // تحميل قصة معينة
     function loadStory(filePath, index) {
         appData.currentStoryIndex = index;
-        
-        // إظهار صفحة القصة مع التحميل
         showPage('storyPage');
         document.getElementById('loading').classList.remove('hidden');
         document.getElementById('storyContent').innerHTML = '';
-        document.getElementById('storyError').classList.add('hidden');
         
-        // تحميل محتوى القصة
         fetch(`data/stories/${filePath}`)
-            .then(response => {
-                if (!response.ok) throw new Error('File not found');
-                return response.json();
-            })
-            .then(storyData => {
+            .then(res => res.json())
+            .then(data => {
                 document.getElementById('loading').classList.add('hidden');
-                document.getElementById('storyTitle').textContent = storyData.title;
-                
-                const contentContainer = document.getElementById('storyContent');
-                if (storyData.content && Array.isArray(storyData.content)) {
-                    storyData.content.forEach(paragraph => {
-                        const p = document.createElement('p');
-                        p.textContent = paragraph;
-                        contentContainer.appendChild(p);
-                    });
-                } else {
-                    contentContainer.innerHTML = '<p>لا يوجد محتوى للقصة</p>';
-                }
-            })
-            .catch(error => {
-                console.error('Error loading story:', error);
-                document.getElementById('loading').classList.add('hidden');
-                document.getElementById('storyError').classList.remove('hidden');
+                document.getElementById('storyTitle').textContent = data.title;
+                const contentDiv = document.getElementById('storyContent');
+                data.content.forEach(para => {
+                    const p = document.createElement('p');
+                    p.textContent = para;
+                    contentDiv.appendChild(p);
+                });
             });
     }
 
-    // القصة السابقة
-    function loadPreviousStory() {
-        if (appData.currentStoryIndex > 0) {
-            const prevStory = appData.currentStories[appData.currentStoryIndex - 1];
-            loadStory(prevStory.file, appData.currentStoryIndex - 1);
-        }
-    }
-
-    // القصة التالية
     function loadNextStory() {
         if (appData.currentStoryIndex < appData.currentStories.length - 1) {
-            const nextStory = appData.currentStories[appData.currentStoryIndex + 1];
-            loadStory(nextStory.file, appData.currentStoryIndex + 1);
+            const next = appData.currentStories[appData.currentStoryIndex + 1];
+            loadStory(next.file, appData.currentStoryIndex + 1);
         }
     }
 
-    // تبديل بين الصفحات
+    function loadPreviousStory() {
+        if (appData.currentStoryIndex > 0) {
+            const prev = appData.currentStories[appData.currentStoryIndex - 1];
+            loadStory(prev.file, appData.currentStoryIndex - 1);
+        }
+    }
+
     function showPage(pageId) {
-        // إخفاء جميع الصفحات
-        document.querySelectorAll('.page').forEach(page => {
-            page.classList.remove('active');
-        });
-        
-        // إظهار الصفحة المطلوبة
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById(pageId).classList.add('active');
+        // تغيير أيقونة الرجوع بناء على الصفحة
+        document.getElementById('backBtn').textContent = pageId === 'categoriesPage' ? '✕' : '→';
+        window.scrollTo(0,0);
     }
-
-    // اختصارات لوحة المفاتيح
-    document.addEventListener('keydown', function(event) {
-        // زر الهروب للرجوع
-        if (event.key === 'Escape') {
-            if (document.getElementById('storyPage').classList.contains('active')) {
-                showPage('storiesPage');
-            } else if (document.getElementById('storiesPage').classList.contains('active')) {
-                showPage('categoriesPage');
-            }
-        }
-        
-        // الأسهم للتنقل بين القصص
-        if (document.getElementById('storyPage').classList.contains('active')) {
-            if (event.key === 'ArrowRight') {
-                loadNextStory();
-            } else if (event.key === 'ArrowLeft') {
-                loadPreviousStory();
-            }
-        }
-    });
 </script>
 
 </body>
-  </html>
+    </html>
