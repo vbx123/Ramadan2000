@@ -1,274 +1,142 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>مسبحة إلكترونية</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مواقيت الصلاة</title>
+    <link rel="stylesheet" href="theme.css">
+    <style>
+        .prayer-header {
+            text-align: center;
+            padding: 30px 20px;
+            background: var(--card);
+            margin: 15px;
+            border-radius: 20px;
+            border-bottom: 5px solid var(--primary);
+            box-shadow: var(--shadow);
+        }
 
-<style>
-:root{
-  --bg:#f2f6f5;
-  --card:#ffffff;
-  --primary:#2fa38c;
-  --accent:#d4b44c;
-  --text:#1a1a1a;
-}
+        .location-text { color: var(--primary); font-weight: bold; font-size: 18px; margin-bottom: 5px; }
+        .date-text { color: var(--muted); font-size: 14px; }
 
-body.dark{
-  --bg:#0e1b1a;
-  --card:#142726;
-  --primary:#41c9ad;
-  --accent:#e6cc6a;
-  --text:#f1f1f1;
-}
+        /* حاوية الأوقات - عرض طولي */
+        .times-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
 
-*{
-  box-sizing:border-box;
-  font-family:"Segoe UI",Tahoma,sans-serif;
-}
+        .time-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: var(--card);
+            border-radius: 15px;
+            border-bottom: 3px solid var(--primary);
+            transition: var(--transition);
+            animation: cardAppear 0.5s ease backwards;
+            box-shadow: var(--shadow);
+        }
 
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  height:100vh;
-  overflow:hidden;
-}
+        /* وميض خاص بالصلاة القادمة */
+        .next-prayer {
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 15px var(--glow-color);
+            transform: scale(1.02);
+        }
 
-/* ===== Top Bar ===== */
-.top-bar{
-  display:flex;
-  gap:10px;
-  padding:14px;
-}
-
-select, .mode-btn{
-  flex:1;
-  padding:12px;
-  border-radius:16px;
-  border:none;
-  background:var(--card);
-  color:var(--text);
-  font-size:15px;
-  box-shadow:0 0 15px rgba(0,0,0,.08);
-}
-
-/* ===== Card Area ===== */
-.card-area{
-  height:200px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  overflow:hidden;
-  position:relative;
-}
-
-.card{
-  width:88%;
-  min-height:150px;
-  background:var(--card);
-  border-radius:26px;
-  padding:34px 22px;
-  text-align:center;
-  font-size:18px;
-  line-height:1.9;
-  position:absolute;
-  border:2px solid var(--primary);
-  box-shadow:
-    0 0 25px rgba(47,163,140,.45),
-    0 0 50px rgba(47,163,140,.25);
-  transition:transform .4s ease, opacity .4s ease;
-}
-
-/* Card Labels */
-.card-header,
-.card-footer{
-  position:absolute;
-  left:50%;
-  transform:translateX(-50%);
-  font-size:13px;
-  color:var(--accent);
-}
-
-.card-header{ top:10px; }
-.card-footer{ bottom:10px; }
-
-.center{transform:translateX(0);opacity:1}
-.left{transform:translateX(-120%);opacity:0}
-.right{transform:translateX(120%);opacity:0}
-
-/* ===== Tasbeeh ===== */
-.tasbeeh{
-  position:absolute;
-  bottom:10px;          /* نزلنا المجموعة كلها */
-  width:100%;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:14px;             /* مسافة بين العناصر */
-  margin-top:40px;      /* فراغ واضح من الكارت */
-}
-
-.counter{
-  font-size:42px;
-  color:var(--accent);
-}
-
-.bead{
-  width:130px;
-  height:130px;
-  border-radius:50%;
-  background:var(--primary);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-size:30px;
-  color:white;
-  box-shadow:
-    0 0 30px rgba(47,163,140,.8),
-    0 0 60px rgba(47,163,140,.4);
-  transition:transform .1s, box-shadow .3s, background .3s;
-}
-
-.bead:active{
-  transform:scale(.9);
-}
-
-.controls button{
-  border:none;
-  padding:10px 22px;
-  border-radius:16px;
-  background:var(--card);
-  color:var(--text);
-}
-
-/* ===== Mobile ===== */
-@media (max-width:480px){
-  .card{font-size:17px}
-}
-</style>
+        .prayer-name { font-size: 20px; font-weight: bold; color: var(--text); }
+        .prayer-time { font-size: 22px; font-weight: bold; color: var(--primary); font-family: 'Cairo', sans-serif; }
+    </style>
 </head>
-
 <body>
 
-<div class="top-bar">
-  <select onchange="loadAzkar(this.value)">
-    <option value="">اختر الذكر</option>
-    <option value="morning">أذكار الصباح</option>
-    <option value="evening">أذكار المساء</option>
-    <option value="tasbeeh">تسبيح</option>
-  </select>
-  <button class="mode-btn" onclick="toggleMode()">ليلي / نهاري</button>
-</div>
+    <div class="top-bar">
+        <button class="icon-btn" onclick="window.history.back()">→</button>
+        <div class="top-title">مواقيت الصلاة</div>
+        <div style="width: 40px;"></div>
+    </div>
 
-<div class="card-area">
-  <div class="card center" id="card">
-    <div class="card-header" id="cardTitle"></div>
-    <div id="cardText">اختر الذكر من القائمة</div>
-    <div class="card-footer" id="cardIndex"></div>
-  </div>
-</div>
+    <div class="prayer-header">
+        <div class="location-text" id="city">جاري تحديد الموقع...</div>
+        <div class="date-text" id="date">-- --- ----</div>
+    </div>
 
-<div class="tasbeeh">
-  <div class="counter" id="count">0</div>
-  <div class="bead" onclick="increment()">📿</div>
-  <div class="controls">
-    <button onclick="resetCount()">مسح</button>
-  </div>
-</div>
+    <div class="times-container" id="prayerTimes">
+        </div>
 
-<audio id="click">
-  <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_6d8b3b5d1a.mp3">
-</audio>
+    <script>
+        window.onload = getLocation;
 
-<script>
-let count = localStorage.getItem("count") || 0;
-let azkar = [];
-let index = 0;
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                document.getElementById('city').textContent = "الموقع غير مدعوم";
+                fetchByCity("Cairo"); // الافتراضي
+            }
+        }
 
-const card = document.getElementById("card");
-const cardText = document.getElementById("cardText");
-const cardTitle = document.getElementById("cardTitle");
-const cardIndex = document.getElementById("cardIndex");
-const countEl = document.getElementById("count");
-const sound = document.getElementById("click");
+        function showPosition(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            fetchTimes(lat, lng);
+        }
 
-countEl.textContent = count;
-updateColor();
+        function showError() {
+            document.getElementById('city').textContent = "القاهرة (افتراضي)";
+            fetchByCity("Cairo");
+        }
 
-function increment(){
-  count++;
-  localStorage.setItem("count",count);
-  countEl.textContent = count;
-  sound.currentTime = 0;
-  sound.play();
-  updateColor();
-}
+        async function fetchTimes(lat, lng) {
+            try {
+                const res = await fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lng}&method=4`);
+                const data = await res.json();
+                displayTimes(data.data);
+            } catch (e) { console.error("Error fetching times"); }
+        }
 
-function resetCount(){
-  count = 0;
-  localStorage.setItem("count",0);
-  countEl.textContent = 0;
-  updateColor();
-}
+        async function fetchByCity(city) {
+            const res = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${city}&country=Egypt&method=4`);
+            const data = await res.json();
+            displayTimes(data.data);
+        }
 
-function updateColor(){
-  let step = Math.floor(count / 33) % 3;
-  const colors = ["#2fa38c","#3f7bd9","#8e44ad"];
-  document.querySelector(".bead").style.background = colors[step];
-}
+        function displayTimes(data) {
+            const timings = data.timings;
+            const date = data.date;
+            
+            document.getElementById('date').textContent = `${date.hijri.day} ${date.hijri.month.ar} ${date.hijri.year} هـ`;
+            document.getElementById('city').textContent = data.meta.timezone.split('/')[1] || "موقعك الحالي";
 
-function loadAzkar(type){
-  index = 0;
-  if(type==="morning"){
-    cardTitle.textContent="أذكار الصباح";
-    azkar=[
-      "أصبحنا وأصبح الملك لله",
-      "اللهم بك أصبحنا وبك أمسينا",
-      "رضيت بالله ربًا وبالإسلام دينًا"
-    ];
-  }else if(type==="evening"){
-    cardTitle.textContent="أذكار المساء";
-    azkar=[
-      "أمسينا وأمسى الملك لله",
-      "اللهم بك أمسينا وبك أصبحنا",
-      "أعوذ بكلمات الله التامات من شر ما خلق"
-    ];
-  }else if(type==="tasbeeh"){
-    cardTitle.textContent="تسبيح";
-    azkar=["سبحان الله","الحمد لله","الله أكبر"];
-  }else{
-    azkar=[];
-  }
-  updateCard();
-}
+            const prayerNames = {
+                "Fajr": "الفجر",
+                "Sunrise": "الشروق",
+                "Dhuhr": "الظهر",
+                "Asr": "العصر",
+                "Maghrib": "المغرب",
+                "Isha": "العشاء"
+            };
 
-function updateCard(){
-  cardText.textContent = azkar[index] || "اختر الذكر من القائمة";
-  cardIndex.textContent = azkar.length ? `${index+1} / ${azkar.length}` : "";
-}
+            const container = document.getElementById('prayerTimes');
+            container.innerHTML = Object.keys(prayerNames).map(key => `
+                <div class="time-card">
+                    <span class="prayer-name">${prayerNames[key]}</span>
+                    <span class="prayer-time">${convertTo12h(timings[key])}</span>
+                </div>
+            `).join('');
+        }
 
-/* Swipe card only */
-let startX=0;
-card.addEventListener("touchstart",e=>startX=e.touches[0].clientX);
-card.addEventListener("touchend",e=>{
-  let endX=e.changedTouches[0].clientX;
-  if(endX-startX>60 && index>0) slide("right",--index);
-  if(startX-endX>60 && index<azkar.length-1) slide("left",++index);
-});
-
-function slide(dir,newIndex){
-  card.classList.add(dir==="left"?"left":"right");
-  setTimeout(()=>{
-    updateCard();
-    card.className="card center";
-  },300);
-}
-
-function toggleMode(){
-  document.body.classList.toggle("dark");
-}
-</script>
-
+        function convertTo12h(time) {
+            let [h, m] = time.split(':');
+            let ampm = h >= 12 ? 'م' : 'ص';
+            h = h % 12 || 12;
+            return `${h}:${m} ${ampm}`;
+        }
+    </script>
 </body>
 </html>
