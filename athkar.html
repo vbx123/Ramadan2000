@@ -44,7 +44,7 @@
             document.getElementById('topTitle').textContent = "الأذكار";
             const container = document.getElementById('mainContainer');
             
-            fetch('Data/Remember/Titles.json')
+            fetch('data/Remember/Titles.json')
                 .then(res => res.json())
                 .then(data => {
                     // عرض الأقسام بشكل طولي (قائمة)
@@ -64,7 +64,7 @@
             document.getElementById('topTitle').textContent = title;
             const container = document.getElementById('mainContainer');
             
-            fetch(`Data/Remember/${fileId}.json`)
+            fetch(`data/Remember/${fileId}.json`)
                 .then(res => res.json())
                 .then(data => {
                     const list = data.content || data;
