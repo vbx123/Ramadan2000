@@ -104,7 +104,7 @@
             document.getElementById('topTitle').textContent = "الأذكار";
             const container = document.getElementById('mainContainer');
             
-            fetch('Data/Remember/Titles.json')
+            fetch('data/Remember/Titles.json')
                 .then(res => res.json())
                 .then(data => {
                     container.innerHTML = data.map(cat => `
@@ -122,7 +122,7 @@
             document.getElementById('topTitle').textContent = title;
             const container = document.getElementById('mainContainer');
             
-            fetch(`Data/Remember/${fileId}.json`)
+            fetch(`data/Remember/${fileId}.json`)
                 .then(res => res.json())
                 .then(data => {
                     // نفترض أن ملف الذكر يحتوي على مصفوفة مباشرة أو كائن به content
