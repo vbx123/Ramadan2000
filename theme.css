@@ -1,141 +1,385 @@
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Amiri:wght@400;700&display=swap');
 
 /* ================== Variables ================== */
-:root {
-  --font-ui: 'Cairo', sans-serif;
-  --font-content: 'Amiri', serif;
-  --transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+:root{
+  --font-ui:'Cairo',sans-serif;
+  --font-content:'Amiri',serif;
+  --transition:.3s ease;
 
   /* Green Theme */
-  --bg: #0f2a24; --bg-grad: #0b1f1a;
-  --card: #163b33; --card-hover: #1c4a40;
-  --primary: #d4af37; --text: #f5f5f5; --muted: #cfd8d3;
+  --bg:#0f2a24;
+  --bg-grad:#0b1f1a;
+  --card:#163b33;
+  --card-hover:#1c4a40;
+  --primary:#d4af37;
+  --text:#f5f5f5;
+  --muted:#cfd8d3;
 }
 
-[data-theme="light"] {
-  --bg: #f7f7f7; --bg-grad: #ffffff;
-  --card: #ffffff; --card-hover: #f0f0f0;
-  --primary: #2e7d32; --text: #1f2933; --muted: #6b7280;
+[data-theme="light"]{
+  --bg:#f7f7f7;
+  --bg-grad:#ffffff;
+  --card:#ffffff;
+  --card-hover:#f0f0f0;
+  --primary:#2e7d32;
+  --text:#1f2933;
+  --muted:#6b7280;
 }
 
-/* ================== Base & Animations ================== */
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+/* ================== Base ================== */
+*{box-sizing:border-box;margin:0;padding:0}
 
-@keyframes fadeIn {
+/* تأثير ظهور العناصر بنعومة */
+@keyframes fadeInUp {
   from { opacity: 0; transform: translateY(15px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-body {
-  font-family: var(--font-ui);
-  background: linear-gradient(180deg, var(--bg), var(--bg-grad));
-  background-attachment: fixed;
-  color: var(--text);
-  min-height: 100vh;
-  padding-top: 70px;
+body{
+  font-family:var(--font-ui);
+  background:linear-gradient(180deg,var(--bg),var(--bg-grad));
+  color:var(--text);
+  min-height:100vh;
+  padding-top:60px; 
 }
 
-/* ================== Top Bar ================== */
-.top-bar {
-  position: fixed; top: 0; right: 0; left: 0; height: 60px;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 16px; background: var(--card); z-index: 1000;
-  border-bottom: 1px solid rgba(255, 255, 255, .08);
+/* ================== Top Bar (ثابت لكل الصفحات) ================== */
+.top-bar{
+  position:fixed;
+  top:0;right:0;left:0;
+  height:60px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 16px;
+  background:var(--card);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  z-index:1000;
 }
 
-/* ================== Layouts (الحل هنا) ================== */
-
-/* 1. نظام المربعات (للصفحة الرئيسية والقرآن والقصص) */
-.container {
-  padding: 16px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* رجعت مربعات زي الأول */
-  gap: 15px;
-  max-width: 1000px;
-  margin: 0 auto;
+.top-title{
+  font-family:var(--font-content);
+  font-size:20px;
+  font-weight:700;
+  color:var(--primary);
 }
 
-/* 2. نظام القائمة الطولية (خاص بصفحة الأذكار فقط) */
-#mainContainer.athkar-mode {
+.icon-btn{
+  background:none;
+  border:none;
+  font-size:22px;
+  cursor:pointer;
+  color:var(--text);
+  transition:var(--transition);
+}
+.icon-btn:hover{color:var(--primary)}
+
+/* ================== Layout ================== */
+header{text-align:center;padding:20px}
+header h1{font-family:var(--font-content);color:var(--primary)}
+header p{color:var(--muted);font-size:14px}
+
+.container{
+  padding:16px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:14px;
+}
+
+/* حل مشكلة الأذكار: عندما يكون الـ container به كلاس athkar-mode اجعله طولي */
+.container.athkar-mode {
   display: flex;
   flex-direction: column;
-  grid-template-columns: none; /* إلغاء الجريد */
 }
 
-/* ================== Cards Styling ================== */
-.card, .surah-card, .reader-box {
+.card{
+  background:var(--card);
+  border-radius:16px;
+  padding:18px 14px;
+  text-align:center;
+  cursor:pointer;
+  transition:var(--transition);
+  animation: fadeInUp 0.5s ease backwards; /* تأثير الظهور */
+}
+.card:hover{
+  background:var(--card-hover);
+  transform:translateY(-6px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+.card:active { transform: scale(0.95); } /* تأثير عند النقر */
+
+.card img{
+  width:36px;
+  height:36px;
+  margin-bottom:10px;
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,.4));
+}
+
+.card h3{font-size:16px}
+.card p{font-size:12px;color:var(--muted);margin-top:6px}
+
+/* ================== Daily ================== */
+.daily{
+  margin:20px 16px;
+  background:linear-gradient(135deg,#2fa38c,#1d6f60);
+  border-radius:18px;
+  padding:18px;
+  color:#fff;
+  animation: fadeInUp 0.6s ease backwards;
+}
+.daily h2{margin-bottom:8px}
+.daily blockquote{
+  font-family:var(--font-content);
+  font-size:18px;
+  line-height:1.7;
+}
+
+/* ================== Footer ================== */
+footer{text-align:center;font-size:12px;color:var(--muted);margin:24px 0}
+
+/* ===== Readers ===== */
+.readers-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+  padding:16px;
+}
+
+.reader-box{
+  background:var(--card);
+  border-radius:16px;
+  text-align:center;
+  padding:10px;
+  cursor:pointer;
+  animation: fadeInUp 0.5s ease backwards;
+}
+
+.reader-box img{
+  width:100%;
+  border-radius:12px;
+}
+
+.reader-box span{
+  display:block;
+  margin-top:8px;
+  font-weight:600;
+}
+
+/* ===== Surahs ===== */
+.surahs-list{
+  flex-direction:column;
+  align-items:center;
+  padding:20px;
+}
+
+.surah-item{
+  width:90%;
+  background:var(--card);
+  padding:14px;
+  margin-bottom:10px;
+  border-radius:14px;
+  text-align:center;
+  font-size:18px;
+  cursor:pointer;
+  animation: fadeInUp 0.4s ease backwards;
+}
+
+/* ===== Player ===== */
+.player-bar{
+  position:fixed;
+  bottom:-120px;
+  left:0;
+  right:0;
+  background:var(--primary);
+  color:#000;
+  padding:10px;
+  transition:.3s;
+}
+
+.player-bar.show{
+  bottom:0;
+}
+
+.player-title{
+  text-align:center;
+  font-size:14px;
+  margin-bottom:6px;
+}
+
+audio{
+  width:100%;
+}
+
+
+/* متغيرات التحكم في القراءة */
+:root {
+  --reader-font-size: 20px;
+  --reader-bg: transparent;
+  --reader-text-color: inherit;
+}
+
+/* الديالوج (Modal) */
+.modal {
+  display: none; 
+  position: fixed; 
+  bottom: 0; left: 0; right: 0;
   background: var(--card);
-  border-radius: 18px;
-  padding: 20px 10px;
-  text-align: center;
-  cursor: pointer;
-  transition: var(--transition);
-  animation: fadeIn 0.5s ease backwards;
-  border: 1px solid rgba(255,255,255,0.03);
-}
-
-.card:hover, .surah-card:hover {
-  background: var(--card-hover);
-  transform: scale(1.05);
-  border-color: var(--primary);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-}
-
-.card:active { transform: scale(0.95); }
-
-.card img { width: 40px; height: 40px; margin-bottom: 10px; }
-
-/* ================== Athkar Specific (الأذكار) ================== */
-.zekr-card {
-  width: 100%; /* الذكر يأخذ العرض كامل */
-  background: var(--card);
-  border-radius: 18px;
   padding: 20px;
-  margin-bottom: 12px;
-  cursor: pointer;
-  transition: var(--transition);
-  animation: fadeIn 0.4s ease backwards;
-  border: 2px solid transparent;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -5px 15px rgba(0,0,0,0.3);
+  z-index: 2000;
+  border-top: 2px solid var(--primary);
 }
 
-.zekr-card:active { transform: scale(0.98); }
-.zekr-done { border-color: var(--primary); background: var(--card-hover); }
+.modal.show { display: block; animation: slideUp 0.3s ease; }
 
-.zekr-text {
-  font-family: var(--font-content); font-size: 22px; line-height: 1.8;
-  display: block; margin-bottom: 15px;
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
 }
 
-/* العداد الدائري */
-.counter-box { display: flex; justify-content: center; }
-.progress-ring { width: 70px; height: 70px; position: relative; }
-.progress-ring svg { transform: rotate(-90deg); width: 70px; height: 70px; }
-.progress-ring circle { fill: none; stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 0.3s ease; }
-.bg-circle { stroke: rgba(255, 255, 255, 0.1); }
-.bar-circle { stroke: var(--primary); }
-.number-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: bold; font-size: 18px; }
+.settings-row {
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
-/* ================== Quran & Stories Text ================== */
-.quran-content, #storyContent {
-  grid-column: 1 / -1; /* عشان ياخد العرض كله في الجريد */
-  font-family: var(--font-content);
-  line-height: 2.2;
-  text-align: center;
+.settings-row label { font-size: 14px; color: var(--muted); }
+
+input[type="range"] { accent-color: var(--primary); width: 60%; }
+
+.color-options { display: flex; gap: 10px; }
+.color-dot { width: 25px; height: 25px; border-radius: 50%; cursor: pointer; border: 1px solid var(--muted); }
+
+/* تطبيق الإعدادات على نص القصة فقط */
+#storyContent {
+  font-size: var(--reader-font-size) !important;
+  background-color: var(--reader-bg);
+  color: var(--reader-text-color);
   padding: 15px;
+  border-radius: 10px;
+  }
+
+/* ================== Athkar Page Styles ================== */
+
+/* بطاقة الذكر */
+.zekr-card {
+    background: var(--card);
+    border-radius: 18px;
+    padding: 20px;
+    margin-bottom: 15px;
+    position: relative;
+    cursor: pointer;
+    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid transparent;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    animation: fadeInUp 0.4s ease backwards; /* تأثير الظهور للأذكار */
 }
 
-/* ================== Modals ================== */
-.modal, #hadithModal, #readerSettings {
-  display: none; position: fixed; bottom: 0; left: 0; right: 0;
-  background: var(--card); padding: 25px; border-radius: 25px 25px 0 0;
-  z-index: 2000; box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
-  border-top: 3px solid var(--primary);
+/* تأثير عند الضغط */
+.zekr-card:active {
+    transform: scale(0.97);
 }
-.modal.active, .modal.show, #hadithModal.active { display: block; animation: slideUp 0.4s ease; }
 
-@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+/* حالة اكتمال الذكر */
+.zekr-done {
+    border-color: var(--primary);
+    background: var(--card-hover);
+    opacity: 0.8;
+}
 
-/* ================== Media Queries ================== */
-@media (max-width: 480px) {
-  .container { grid-template-columns: repeat(2, 1fr); } /* في الموبايل يظهر اتنين جمب بعض */
+/* نص الذكر */
+.zekr-text {
+    font-family: var(--font-content);
+    font-size: 22px;
+    line-height: 1.8;
+    margin-bottom: 15px;
+    display: block;
+    color: var(--text);
+}
+
+/* حاوية العداد الدائري */
+.counter-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.progress-ring {
+    width: 70px;
+    height: 70px;
+    position: relative;
+}
+
+.progress-ring svg {
+    transform: rotate(-90deg);
+    width: 70px;
+    height: 70px;
+}
+
+.progress-ring circle {
+    fill: none;
+    stroke-width: 6;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.3s ease;
+}
+
+/* الدائرة الخلفية الباهتة */
+.bg-circle {
+    stroke: rgba(255, 255, 255, 0.1);
+}
+
+/* شريط التقدم الملون */
+.bar-circle {
+    stroke: var(--primary);
+}
+
+/* الرقم الموجود وسط الدائرة */
+.number-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+    font-size: 20px;
+    font-family: var(--font-ui);
+    color: var(--primary);
+}
+
+/* تلميح المصدر */
+.source-hint {
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 12px;
+    opacity: 0.7;
+}
+
+/* ديالوج (Modal) المصدر وفضل الذكر */
+#hadithModal {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--card);
+    padding: 25px;
+    border-radius: 25px 25px 0 0;
+    z-index: 2000;
+    box-shadow: 0 -5px 30px rgba(0, 0, 0, 0.6);
+    border-top: 3px solid var(--primary);
+}
+
+/* إظهار الديالوج بأنيميشن */
+#hadithModal.active {
+    display: block;
+    animation: slideUpAthkar 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+}
+
+@keyframes slideUpAthkar {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
 }
