@@ -1,0 +1,5 @@
+[
+  { "id": "sabah", "name": "أذكار الصباح", "icon": "https://cdn-icons-png.flaticon.com/512/869/869869.png" },
+  { "id": "masa", "name": "أذكار المساء", "icon": "https://cdn-icons-png.flaticon.com/512/3645/3645851.png" },
+  { "id": "sleep", "name": "أذكار النوم", "icon": "https://cdn-icons-png.flaticon.com/512/3094/3094833.png" }
+]
