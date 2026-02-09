@@ -3,110 +3,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>قصص الأنبياء والصحابة</title>
+    <title>مكتبة القصص - القارئ الذكي</title>
     
-    <link rel="stylesheet" href="theme.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        /* ستايلات خاصة فقط بمنطق الصفحات (Page Logic) وليست للهوية البصرية */
-        .page { display: none; min-height: 80vh; }
-        .page.active { display: block; }
-        .story-content { 
-            font-family: var(--font-content); 
-            font-size: 22px; 
-            line-height: 1.8; 
-            text-align: justify; 
-            padding: 10px;
+        /* استيراد المتغيرات من ملفك theme.css مع إضافات القارئ */
+        :root {
+            --font-ui: 'Cairo', sans-serif;
+            --font-content: 'Amiri', serif;
+            --transition: .3s ease;
+
+            /* Green Theme (Dark) */
+            --bg: #0f2a24;
+            --bg-grad: #0b1f1a;
+            --card: #163b33;
+            --card-hover: #1c4a40;
+            --primary: #d4af37;
+            --text: #f5f5f5;
+            --muted: #cfd8d3;
+
+            /* متغيرات القارئ الافتراضية */
+            --reader-font-size: 20px;
+            --reader-bg: transparent;
+            --reader-text-color: inherit;
         }
-        .nav-links {
+
+        [data-theme="light"] {
+            --bg: #f7f7f7;
+            --bg-grad: #ffffff;
+            --card: #ffffff;
+            --card-hover: #f0f0f0;
+            --primary: #2e7d32;
+            --text: #1f2933;
+            --muted: #6b7280;
+        }
+
+        /* Base */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: var(--font-ui);
+            background: linear-gradient(180deg, var(--bg), var(--bg-grad));
+            color: var(--text);
+            min-height: 100vh;
+            padding-top: 70px; /* مساحة للبار العلوي */
+            transition: background var(--transition);
+        }
+
+        /* Top Bar */
+        .top-bar {
+            position: fixed;
+            top: 0; right: 0; left: 0;
+            height: 60px;
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            margin-top: 30px;
-            padding: 20px 0;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            padding: 0 16px;
+            background: var(--card);
+            border-bottom: 1px solid rgba(255,255,255,.08);
+            z-index: 1000;
         }
-        .error { color: #ff6b6b; text-align: center; padding: 20px; border: 1px dashed #ff6b6b; border-radius: 12px; }
+
+        .top-title { font-family: var(--font-content); font-size: 20px; font-weight: 700; color: var(--primary); }
+        .icon-btn { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--text); transition: var(--transition); }
+        .icon-btn:hover { color: var(--primary); }
+
+        /* Layout & Components */
+        header { text-align: center; padding: 20px; }
+        header h1 { font-family: var(--font-content); color: var(--primary); margin-bottom: 8px; }
+        
+        .container { padding: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
+        
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 18px 14px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .card:hover { background: var(--card-hover); transform: translateY(-5px); }
+        .card h3 { font-size: 16px; color: var(--primary); }
+
+        .surah-item {
+            width: 100%;
+            background: var(--card);
+            padding: 16px;
+            margin-bottom: 10px;
+            border-radius: 12px;
+            text-align: right;
+            font-size: 18px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .surah-item:hover { background: var(--card-hover); padding-right: 25px; }
+
+        /* Reader Mode Content */
+        #storyContent {
+            font-family: var(--font-content);
+            font-size: var(--reader-font-size);
+            background-color: var(--reader-bg);
+            color: var(--reader-text-color);
+            line-height: 1.8;
+            text-align: justify;
+            padding: 20px;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+        #storyContent p { margin-bottom: 20px; }
+
+        /* Modal Settings */
+        .modal {
+            display: none; 
+            position: fixed; 
+            bottom: 0; left: 0; right: 0;
+            background: var(--card);
+            padding: 25px;
+            border-radius: 24px 24px 0 0;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.4);
+            z-index: 2000;
+            border-top: 3px solid var(--primary);
+        }
+        .modal.show { display: block; animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        .settings-row { margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; }
+        .color-options { display: flex; gap: 15px; }
+        .color-dot { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid rgba(0,0,0,0.1); }
+
+        .page { display: none; }
+        .page.active { display: block; }
         .hidden { display: none; }
+        footer { text-align: center; padding: 30px; font-size: 12px; color: var(--muted); }
+
+        /* Navigation Buttons */
+        .nav-links { display: flex; gap: 10px; margin-top: 20px; padding: 0 16px; }
+        .nav-btn { flex: 1; background: var(--card); color: var(--text); border: 1px solid var(--primary); padding: 12px; border-radius: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="top-bar">
-    <button class="icon-btn" onclick="goBackLogic()" id="backBtn">✕</button>
-    <div class="top-title" id="dynamicTitle">المكتبة الإسلامية</div>
-    <button class="icon-btn" onclick="toggleTheme()">🌓</button>
-</div>
-
-<div id="categoriesPage" class="page active">
-    <header>
-        <h1>📖 قصص الأنبياء والصحابة</h1>
-        <p>اختر القسم لعرض القصص</p>
-    </header>
-    
-    <div id="categoriesList" class="container">
-        </div>
-    
-    <div id="categoriesError" class="error hidden">⚠️ تعذر تحميل الأقسام</div>
-</div>
-
-<div id="storiesPage" class="page">
-    <header>
-        <h1 id="sectionTitle">قصص القسم</h1>
-    </header>
-    
-    <div id="storiesList" class="container" style="grid-template-columns: 1fr;">
-        </div>
-</div>
-
-<div id="storyPage" class="page">
-    <header>
-        <h1 id="storyTitle">عنوان القصة</h1>
-    </header>
-    
-    <div id="loading" style="text-align:center; padding:20px;">جاري التحميل...</div>
-    
-    <div class="container" style="display:block;">
-        <div id="storyContent" class="story-content"></div>
+    <div class="top-bar">
+        <button class="icon-btn" onclick="goBackLogic()" id="backBtn">✕</button>
+        <div class="top-title" id="dynamicTitle">قصص وعبر</div>
+        <button class="icon-btn" id="mainActionBtn" onclick="toggleTheme()">🌓</button>
     </div>
-    
-    <div class="nav-links" style="padding: 16px;">
-        <button class="card" style="flex:1; margin:5px;" onclick="loadPreviousStory()">السابقة</button>
-        <button class="card" style="flex:1; margin:5px;" onclick="loadNextStory()">التالية</button>
-    </div>
-</div>
 
-<footer>جميع الحقوق محفوظة &copy; 2024</footer>
+    <div id="categoriesPage" class="page active">
+        <header>
+            <h1> الموسوعة الإسلامية</h1>
+            <p>اختر التصنيف المفضل لديك</p>
+        </header>
+        <div id="categoriesList" class="container"></div>
+    </div>
+
+    <div id="storiesPage" class="page">
+        <header>
+            <h1 id="sectionTitle">القصص</h1>
+        </header>
+        <div id="storiesList" style="padding: 16px;"></div>
+    </div>
+
+    <div id="storyPage" class="page">
+        <header>
+            <h1 id="storyTitle">عنوان القصة</h1>
+        </header>
+        <div id="loading" style="text-align:center; padding:50px;">جاري تحميل القصة...</div>
+        <div style="padding: 16px;">
+            <div id="storyContent"></div>
+        </div>
+        <div class="nav-links">
+            <button class="nav-btn" onclick="loadPreviousStory()">السابقة</button>
+            <button class="nav-btn" onclick="loadNextStory()">التالية</button>
+        </div>
+    </div>
+
+    <div id="readerSettings" class="modal">
+        <h3 style="margin-bottom: 20px; text-align: center; color: var(--primary);">إعدادات القراءة</h3>
+        <div class="settings-row">
+            <label>حجم الخط</label>
+            <input type="range" min="16" max="36" value="20" style="width: 70%;" oninput="changeFontSize(this.value)">
+        </div>
+        <div class="settings-row">
+            <label>نمط الورقة</label>
+            <div class="color-options">
+                <div class="color-dot" style="background:#f4ecd8;" onclick="changeReaderBg('#f4ecd8', '#5b4636')"></div>
+                <div class="color-dot" style="background:#ffffff;" onclick="changeReaderBg('#ffffff', '#1a1a1a')"></div>
+                <div class="color-dot" style="background:#163b33;" onclick="changeReaderBg('transparent', 'inherit')"></div>
+            </div>
+        </div>
+        <button class="surah-item" style="text-align:center; background:var(--primary); color:#000; font-weight:bold;" onclick="closeSettings()">إتمام</button>
+    </div>
+
+    <footer>جميع الحقوق محفوظة &copy; 2024</footer>
 
 <script>
-    // --- منطق الثيم والحفظ ---
-    function toggleTheme() {
-        const html = document.documentElement;
-        const current = html.getAttribute('data-theme');
-        const next = current === 'dark' ? 'light' : 'dark';
-        html.setAttribute('data-theme', next);
-        localStorage.setItem('theme', next);
-    }
-
-    // تطبيق الثيم المحفوظ فور تحميل الصفحة
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-
-    // --- منطق التنقل بين الصفحات ---
-    function goBackLogic() {
-        if (document.getElementById('storyPage').classList.contains('active')) {
-            showPage('storiesPage');
-        } else if (document.getElementById('storiesPage').classList.contains('active')) {
-            showPage('categoriesPage');
-        } else {
-            window.history.back(); // لو في الصفحة الرئيسية يرجع للموقع الأساسي
-        }
-    }
-
+    // --- بيانات التطبيق ---
     let appData = {
-        currentCategory: null,
+        categories: {},
         currentStories: [],
-        currentStoryIndex: -1,
-        categories: {}
+        currentStoryIndex: -1
     };
 
     const categoryNames = {
@@ -116,96 +213,124 @@
         "quran": "قصص القرآن"
     };
 
-    window.addEventListener('DOMContentLoaded', loadCategories);
+    // --- منطق الثيم والإعدادات ---
+    function toggleTheme() {
+        const html = document.documentElement;
+        const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+    }
 
-    function loadCategories() {
+    function openSettings() { document.getElementById('readerSettings').classList.add('show'); }
+    function closeSettings() { document.getElementById('readerSettings').classList.remove('show'); }
+
+    function changeFontSize(size) {
+        document.documentElement.style.setProperty('--reader-font-size', size + 'px');
+    }
+
+    function changeReaderBg(bg, text) {
+        document.documentElement.style.setProperty('--reader-bg', bg);
+        document.documentElement.style.setProperty('--reader-text-color', text);
+    }
+
+    // --- التنقل ---
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        
+        const btn = document.getElementById('mainActionBtn');
+        const back = document.getElementById('backBtn');
+
+        if (pageId === 'storyPage') {
+            btn.innerHTML = '⚙️';
+            btn.onclick = openSettings;
+        } else {
+            btn.innerHTML = '🌓';
+            btn.onclick = toggleTheme;
+        }
+        back.textContent = pageId === 'categoriesPage' ? '✕' : '→';
+        window.scrollTo(0,0);
+    }
+
+    function goBackLogic() {
+        if (document.getElementById('storyPage').classList.contains('active')) showPage('storiesPage');
+        else if (document.getElementById('storiesPage').classList.contains('active')) showPage('categoriesPage');
+        else window.history.back();
+    }
+
+    // --- تحميل البيانات ---
+    window.onload = () => {
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        
         fetch('data/stories/categories.json')
             .then(res => res.json())
             .then(data => {
                 appData.categories = data;
                 displayCategories();
-            })
-            .catch(() => document.getElementById('categoriesError').classList.remove('hidden'));
-    }
+            });
+    };
 
     function displayCategories() {
         const container = document.getElementById('categoriesList');
-        container.innerHTML = '';
-        const order = ["Prophets", "sahaba", "lessons", "quran"];
-        
-        order.forEach(id => {
+        ["Prophets", "sahaba", "lessons", "quran"].forEach(id => {
             if (appData.categories[id]) {
-                const item = document.createElement('div');
-                item.className = 'card';
-                item.innerHTML = `
-                    <h3>${categoryNames[id] || id}</h3>
-                    <p>${appData.categories[id].length} قصة</p>
-                `;
-                item.onclick = () => showStories(id, appData.categories[id]);
-                container.appendChild(item);
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `<h3>${categoryNames[id] || id}</h3><p>${appData.categories[id].length} قصة</p>`;
+                card.onclick = () => showStories(id, appData.categories[id]);
+                container.appendChild(card);
             }
         });
     }
 
-    function showStories(categoryId, stories) {
+    function showStories(id, stories) {
         appData.currentStories = stories;
-        document.getElementById('sectionTitle').textContent = categoryNames[categoryId] || categoryId;
-        showPage('storiesPage');
-        
-        const container = document.getElementById('storiesList');
-        container.innerHTML = '';
-        
-        stories.forEach((story, index) => {
-            const el = document.createElement('div');
-            el.className = 'surah-item'; // استخدمنا استايل السور لأنه أنسب للقوائم
-            el.textContent = story.title;
-            el.onclick = () => loadStory(story.file, index);
-            container.appendChild(el);
+        document.getElementById('sectionTitle').textContent = categoryNames[id];
+        const list = document.getElementById('storiesList');
+        list.innerHTML = '';
+        stories.forEach((s, i) => {
+            const item = document.createElement('div');
+            item.className = 'surah-item';
+            item.textContent = s.title;
+            item.onclick = () => loadStory(s.file, i);
+            list.appendChild(item);
         });
+        showPage('storiesPage');
     }
 
-    function loadStory(filePath, index) {
+    function loadStory(file, index) {
         appData.currentStoryIndex = index;
         showPage('storyPage');
         document.getElementById('loading').classList.remove('hidden');
         document.getElementById('storyContent').innerHTML = '';
         
-        fetch(`data/stories/${filePath}`)
+        fetch(`data/stories/${file}`)
             .then(res => res.json())
             .then(data => {
                 document.getElementById('loading').classList.add('hidden');
                 document.getElementById('storyTitle').textContent = data.title;
-                const contentDiv = document.getElementById('storyContent');
-                data.content.forEach(para => {
-                    const p = document.createElement('p');
-                    p.textContent = para;
-                    contentDiv.appendChild(p);
+                data.content.forEach(p => {
+                    const para = document.createElement('p');
+                    para.textContent = p;
+                    document.getElementById('storyContent').appendChild(para);
                 });
             });
     }
 
     function loadNextStory() {
         if (appData.currentStoryIndex < appData.currentStories.length - 1) {
-            const next = appData.currentStories[appData.currentStoryIndex + 1];
-            loadStory(next.file, appData.currentStoryIndex + 1);
+            const i = appData.currentStoryIndex + 1;
+            loadStory(appData.currentStories[i].file, i);
         }
     }
 
     function loadPreviousStory() {
         if (appData.currentStoryIndex > 0) {
-            const prev = appData.currentStories[appData.currentStoryIndex - 1];
-            loadStory(prev.file, appData.currentStoryIndex - 1);
+            const i = appData.currentStoryIndex - 1;
+            loadStory(appData.currentStories[i].file, i);
         }
     }
-
-    function showPage(pageId) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
-        // تغيير أيقونة الرجوع بناء على الصفحة
-        document.getElementById('backBtn').textContent = pageId === 'categoriesPage' ? '✕' : '→';
-        window.scrollTo(0,0);
-    }
 </script>
-
 </body>
-    </html>
+            </html>
