@@ -159,3 +159,22 @@ audio { width: 100%; filter: invert(0); }
 
 /* ================== Footer ================== */
 footer { text-align: center; font-size: 13px; color: var(--muted); margin: 30px 0; }
+
+
+
+/* منع تحديد النصوص والنسخ في التطبيق بالكامل */
+* {
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none;      /* IE 10+ */
+    user-select: none;          /* Standard syntax */
+    
+    /* منع ظهور قائمة الخيارات عند الضغط المطول في الموبايل */
+    -webkit-touch-callout: none; 
+}
+
+/* استثناء: لو عندك خانة بحث (Input) لازم نسمح فيها بالكتابة والتحديد */
+input, textarea {
+    -webkit-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
