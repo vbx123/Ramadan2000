@@ -2,98 +2,170 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>زاد رمضان</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="theme.css">
 </head>
-<body>
+<body class="fade-in">
 
-<!-- Top Bar -->
 <div class="top-bar">
-  <button class="icon-btn" onclick="toggleTheme()">🌗</button>
+  <button class="icon-btn shadow-sm" onclick="toggleTheme()"><i class="fa-solid fa-circle-half-stroke"></i></button>
   <div class="top-title">زاد رمضان</div>
-  <button class="icon-btn" onclick="alert('الدعم الفني')">🛠️</button>
+  <button class="icon-btn shadow-sm" onclick="location.href='support.html'"><i class="fa-solid fa-headset"></i></button>
 </div>
 
-<header>
-  <h1>زاد رمضان</h1>
-  <p>رفيقك اليومي في شهر الخير</p>
-</header>
-
-<section class="daily">
-  <h2 id="dailyTitle">آية اليوم</h2>
-  <blockquote id="dailyText">...</blockquote>
+<section class="quick-access">
+  <button class="qa-btn" id="btn-prayer" onclick="updateSmartBox('prayer')">
+    <i class="fa-solid fa-person-praying"></i>
+    <span>الصلاة القادمة</span>
+  </button>
+  <button class="qa-btn" id="btn-ayah" onclick="updateSmartBox('ayah')">
+    <i class="fa-solid fa-book-quran"></i>
+    <span>آية اليوم</span>
+  </button>
+  <button class="qa-btn" id="btn-hadith" onclick="updateSmartBox('hadith')">
+    <i class="fa-solid fa-mosque"></i>
+    <span>حديث اليوم</span>
+  </button>
 </section>
 
-<main class="container">
+<div class="smart-box" id="mainSmartBox" onclick="go('special_details.html')">
+    <div id="smartContent" class="smart-content">
+        <h2 id="smartTitle" style="font-size: 16px; color: var(--primary); margin-bottom: 10px;">جاري التحميل...</h2>
+        <p id="smartText" class="text-fancy" style="font-size: 20px; font-family: var(--font-content);">...</p>
+        <div id="countdown" style="margin-top: 10px; font-weight: bold; color: var(--accent);"></div>
+    </div>
+</div>
+
+<main class="container" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 15px;">
   <div class="card" onclick="go('quran.html')">
-    <img src="https://cdn.jsdelivr.net/npm/lucide-static/icons/book-open.svg">
+    <i class="fa-solid fa-book-quran fa-2x" style="color: var(--primary); margin-bottom: 10px;"></i>
     <h3>القرآن الكريم</h3>
   </div>
 
   <div class="card" onclick="go('stories.html')">
-    <img src="https://cdn.jsdelivr.net/npm/lucide-static/icons/scroll.svg">
-    <h3>قصص إسلامية</h3>
+    <i class="fa-solid fa-scroll fa-2x" style="color: var(--primary); margin-bottom: 10px;"></i>
+    <h3>قصص الأنبياء</h3>
   </div>
 
   <div class="card" onclick="go('athkar.html')">
-    <img src="https://cdn.jsdelivr.net/npm/lucide-static/icons/activity.svg">
+    <i class="fa-solid fa-rosary fa-2x" style="color: var(--primary); margin-bottom: 10px;"></i>
     <h3>الأذكار</h3>
   </div>
 
-  <div class="card">
-    <img src="https://cdn.jsdelivr.net/npm/lucide-static/icons/heart.svg">
+  <div class="card" onclick="go('dua.html')">
+    <i class="fa-solid fa-heart-pulse fa-2x" style="color: var(--primary); margin-bottom: 10px;"></i>
     <h3>الأدعية</h3>
   </div>
 
-  <div class="card">
-    <img src="https://cdn.jsdelivr.net/npm/lucide-static/icons/help-circle.svg">
-    <h3>فقه وأسئلة</h3>
+  <div class="card" onclick="go('prayer.html')">
+    <i class="fa-solid fa-clock fa-2x" style="color: var(--primary); margin-bottom: 10px;"></i>
+    <h3>مواقيت الصلاة</h3>
   </div>
 
-  <div class="card" onclick="go('tasbeeh.html')">
-    <img src="https://cdn.jsdelivr.net/npm/lucide-static/icons/moon.svg">
-    <h3>مواقيت الصلاة</h3>
+  <div class="card" onclick="go('names.html')">
+    <i class="fa-solid fa-star-and-crescent fa-2x" style="color: var(--primary); margin-bottom: 10px;"></i>
+    <h3>أسماء الله</h3>
   </div>
 </main>
 
-<footer>© تطبيق زاد رمضان</footer>
+<footer style="margin-top: 30px; opacity: 0.6; font-size: 12px; text-align: center; padding-bottom: 20px;">
+    تطبيق زاد رمضان - الإصدار المطور 2026
+</footer>
 
 <script>
-/* ========= Theme ========= */
+/* ========= نظام الثيم الذكي والمستقر ========= */
 function toggleTheme(){
-  const b=document.body;
-  if(b.dataset.theme==="light"){
-    b.removeAttribute("data-theme");
-    localStorage.setItem("theme","green");
-  }else{
-    b.dataset.theme="light";
-    localStorage.setItem("theme","light");
-  }
+    const current = document.documentElement.getAttribute('data-theme');
+    const target = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', target);
+    localStorage.setItem('theme', target);
 }
-if(localStorage.getItem("theme")==="light"){
-  document.body.dataset.theme="light";
+// تطبيق الثيم فوراً عند التحميل لمنع الوميض الأبيض
+document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
+
+function go(p){ setTimeout(()=>location.href=p, 250); }
+
+/* ========= نظام المربع الذكي (الصلاة - الآية - الحديث) ========= */
+let currentMode = 'prayer';
+let dailyData = { ayah: "وَإِذَا سَأَلَكَ عِبَادِي عَنِّي فَإِنِّي قَرِيبٌ", hadith: "خيركم من تعلم القرآن وعلمه" };
+let prayerTimings = {};
+let nextPrayerInfo = { name: "", time: "" };
+
+async function initDaily() {
+    // جلب المواقيت (افتراضياً القاهرة حتى تحديد الموقع)
+    try {
+        const res = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Cairo&country=Egypt&method=4');
+        const d = await res.json();
+        prayerTimings = d.data.timings;
+        calculateNextPrayer();
+    } catch(e) { console.log("خطأ في جلب المواقيت"); }
+    
+    // تبديل تلقائي كل 5 ثواني
+    setInterval(() => {
+        const modes = ['prayer', 'ayah', 'hadith'];
+        let idx = modes.indexOf(currentMode);
+        updateSmartBox(modes[(idx + 1) % modes.length]);
+    }, 5000);
 }
 
-/* ========= Navigation ========= */
-function go(p){setTimeout(()=>location.href=p,200)}
+function calculateNextPrayer() {
+    const now = new Date();
+    const times = { "الفجر": prayerTimings.Fajr, "الظهر": prayerTimings.Dhuhr, "العصر": prayerTimings.Asr, "المغرب": prayerTimings.Maghrib, "العشاء": prayerTimings.Isha };
+    
+    for (let name in times) {
+        let pTime = new Date();
+        let [h, m] = times[name].split(':');
+        pTime.setHours(h, m, 0);
+        if (pTime > now) {
+            nextPrayerInfo = { name, time: pTime };
+            break;
+        }
+    }
+}
 
-/* ========= Daily Content ========= */
-let dayIndex=Math.floor(Date.now()/86400000);
+function updateSmartBox(mode) {
+    currentMode = mode;
+    const title = document.getElementById('smartTitle');
+    const text = document.getElementById('smartText');
+    const count = document.getElementById('countdown');
+    const btns = document.querySelectorAll('.qa-btn');
+    
+    btns.forEach(b => b.classList.remove('active-tab'));
+    count.textContent = "";
 
-fetch("daily.json")
-.then(r=>r.json())
-.then(data=>{
-  const day=data[dayIndex % data.length];
-  let i=0;
-  setInterval(()=>{
-    const item=day.items[i%day.items.length];
-    document.getElementById("dailyTitle").textContent=item.title;
-    document.getElementById("dailyText").textContent=item.text;
-    i++;
-  },10000);
-});
+    if(mode === 'prayer') {
+        document.getElementById('btn-prayer').classList.add('active-tab');
+        title.innerHTML = `<i class="fa-solid fa-clock pulse-primary"></i> الصلاة القادمة: ${nextPrayerInfo.name}`;
+        text.textContent = "موعد الأذان: " + prayerTimings[getEngName(nextPrayerInfo.name)];
+        startCountdown();
+    } else if(mode === 'ayah') {
+        document.getElementById('btn-ayah').classList.add('active-tab');
+        title.innerHTML = `<i class="fa-solid fa-book-open"></i> آية اليوم`;
+        text.textContent = dailyData.ayah;
+    } else {
+        document.getElementById('btn-hadith').classList.add('active-tab');
+        title.innerHTML = `<i class="fa-solid fa-quote-right"></i> حديث اليوم`;
+        text.textContent = dailyData.hadith;
+    }
+}
+
+function getEngName(ar) {
+    const map = {"الفجر":"Fajr", "الظهر":"Dhuhr", "العصر":"Asr", "المغرب":"Maghrib", "العشاء":"Isha"};
+    return map[ar] || "Fajr";
+}
+
+function startCountdown() {
+    if(!nextPrayerInfo.time) return;
+    const diff = nextPrayerInfo.time - new Date();
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    document.getElementById('countdown').textContent = `باقي ${h} ساعة و ${m} دقيقة`;
+}
+
+initDaily();
 </script>
 
 </body>
-</html>
+    </html>
