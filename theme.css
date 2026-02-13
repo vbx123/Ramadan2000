@@ -1,180 +1,202 @@
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Amiri:wght@400;700&display=swap');
+/* استيراد الخطوط الاحترافية */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Amiri:wght@400;700&family=Reem+Kufi:wght@400;700&display=swap');
 
-/* ================== Variables ================== */
 :root {
-  --font-ui: 'Cairo', sans-serif;
-  --font-content: 'Amiri', serif;
-  --transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
-
-  /* الثيم الأساسي: الأبيض (Light Mode) */
-  --bg: #f7f7f7;
-  --bg-grad: #ffffff;
-  --card: #ffffff;
-  --card-hover: #f0f0f0;
-  --primary: #2e7d32; /* أخضر مريح للعين في الثيم الأبيض */
-  --text: #1f2933;
-  --muted: #6b7280;
-  --glow-color: rgba(46, 125, 50, 0.3); /* وميض أخضر خفيف */
+    /* الثيم النهاري (الأبيض اللؤلؤي) */
+    --bg: #f4f7f6;
+    --bg-grad: #ffffff;
+    --card: #ffffff;
+    --card-hover: #fdfdfd;
+    --primary: #2e7d32; /* أخضر إسلامي */
+    --accent: #d4af37;  /* ذهبي */
+    --text: #2c3e50;
+    --muted: #7f8c8d;
+    --glass: rgba(255, 255, 255, 0.8);
+    --glow-color: rgba(46, 125, 50, 0.1);
+    --shadow: 0 8px 30px rgba(0,0,0,0.04);
+    
+    --font-ui: 'Cairo', sans-serif;
+    --font-content: 'Amiri', serif;
+    --font-fancy: 'Reem Kufi', sans-serif;
+    --transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* الثيم الاحتياطي: الأخضر (Dark Green Theme) */
 [data-theme="dark"] {
-  --bg: #0f2a24;
-  --bg-grad: #0b1f1a;
-  --card: #163b33;
-  --card-hover: #1c4a40;
-  --primary: #d4af37; /* ذهبي للثيم الغامق */
-  --text: #f5f5f5;
-  --muted: #cfd8d3;
-  --glow-color: rgba(212, 175, 55, 0.4); /* وميض ذهبي */
+    /* الثيم الليلي (الأخضر الملكي) */
+    --bg: #06110f;
+    --bg-grad: #0a1f1b;
+    --card: #0f2621;
+    --card-hover: #15352e;
+    --primary: #d4af37;
+    --accent: #f1c40f;
+    --text: #e0e0e0;
+    --muted: #95a5a6;
+    --glass: rgba(15, 38, 33, 0.8);
+    --glow-color: rgba(212, 175, 55, 0.15);
+    --shadow: 0 8px 32px rgba(0,0,0,0.4);
 }
 
-/* ================== Base & Animations ================== */
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
-@keyframes cardAppear {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* أنيميشن الوميض السفلي المستمر */
-@keyframes bottomGlow {
-  0% { box-shadow: 0 4px 10px -2px var(--glow-color); }
-  50% { box-shadow: 0 8px 20px -2px var(--glow-color); }
-  100% { box-shadow: 0 4px 10px -2px var(--glow-color); }
+/* ================== Base & Reset ================== */
+* {
+    box-sizing: border-box;
+    margin: 0; padding: 0;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
 }
 
 body {
-  font-family: var(--font-ui);
-  background: linear-gradient(180deg, var(--bg), var(--bg-grad));
-  color: var(--text);
-  min-height: 100vh;
-  padding-top: 60px; 
-  transition: background var(--transition), color var(--transition);
+    font-family: var(--font-ui);
+    background: var(--bg);
+    background-attachment: fixed;
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+    transition: background var(--transition);
 }
 
-/* ================== Top Bar ================== */
+/* انميشن ظهور المحتوى */
+.fade-in {
+    animation: fadeIn 0.6s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ================== Top Bar (ثابت في كل الصفحات) ================== */
 .top-bar {
-  position: fixed; top: 0; right: 0; left: 0; height: 60px;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 16px; background: var(--card); z-index: 1000;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
-  transition: background var(--transition);
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 65px; background: var(--glass);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px; z-index: 2000;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    box-shadow: var(--shadow);
 }
 
-.top-title { font-family: var(--font-content); font-size: 20px; font-weight: 700; color: var(--primary); }
+.top-title {
+    font-family: var(--font-fancy);
+    font-size: 20px; font-weight: 700;
+    background: linear-gradient(45deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
 
 .icon-btn {
-  background: none; border: none; font-size: 22px; cursor: pointer;
-  color: var(--text); transition: var(--transition);
-}
-.icon-btn:active { transform: scale(0.8); color: var(--primary); }
-
-/* ================== Layout & Global Cards ================== */
-header { text-align: center; padding: 20px; }
-header h1 { font-family: var(--font-content); color: var(--primary); }
-
-.container {
-  padding: 16px; display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 18px;
+    width: 40px; height: 40px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--card); border: 1px solid rgba(0,0,0,0.05);
+    color: var(--text); font-size: 20px; cursor: pointer;
+    transition: var(--transition);
 }
 
-/* الكروت مع تأثير الوميض السفلي والخط الملون */
-.card, .reader-box, .surah-item {
-  background: var(--card);
-  border-radius: 18px;
-  padding: 18px 14px;
-  text-align: center;
-  cursor: pointer;
-  transition: var(--transition);
-  animation: cardAppear 0.5s ease backwards, bottomGlow 3s infinite ease-in-out;
-  border: 1px solid rgba(0,0,0,0.03);
-  /* الخط السفلي الملون */
-  border-bottom: 4px solid var(--primary);
-  position: relative;
-  overflow: hidden;
+.icon-btn:active { transform: scale(0.9); background: var(--primary); color: #fff; }
+
+/* ================== المربعات الثلاثة الذكية (الرئيسية) ================== */
+.quick-access {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 10px; padding: 15px; margin-top: 10px;
 }
 
-.card:hover, .reader-box:hover, .surah-item:hover {
-  background: var(--card-hover);
-  transform: translateY(-8px);
-  border-bottom-width: 6px; /* زيادة سمك الخط عند الوقوف */
+.qa-btn {
+    background: var(--card);
+    padding: 12px 5px; border-radius: 15px;
+    text-align: center; border: none;
+    box-shadow: var(--shadow); border-bottom: 3px solid var(--primary);
+    transition: var(--transition);
 }
 
-.card:active { transform: scale(0.94); }
+.qa-btn i { font-size: 18px; color: var(--primary); display: block; margin-bottom: 5px; }
+.qa-btn span { font-size: 11px; font-weight: bold; color: var(--text); }
 
-.card img {
-  width: 42px; height: 42px; margin-bottom: 12px;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+.qa-btn.active-tab {
+    background: var(--primary);
+    border-bottom-color: var(--accent);
+}
+.qa-btn.active-tab i, .qa-btn.active-tab span { color: #fff; }
+
+/* ================== المربع الذكي المتغير (Smart Slider) ================== */
+.smart-box {
+    margin: 0 15px 20px; padding: 25px;
+    background: var(--card); border-radius: 24px;
+    min-height: 160px; display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    text-align: center; position: relative;
+    box-shadow: var(--shadow); border-bottom: 4px solid var(--accent);
+    overflow: hidden;
 }
 
-/* ================== Daily Section ================== */
-.daily {
-  margin: 20px 16px;
-  background: linear-gradient(135deg, var(--primary), #1d6f60);
-  border-radius: 18px; padding: 20px; color: #fff;
-  animation: cardAppear 0.6s ease 0.1s backwards;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-}
-.daily blockquote { font-family: var(--font-content); font-size: 19px; line-height: 1.7; }
+.smart-content { animation: slideLeft 0.5s ease; }
 
-/* ================== Readers & Lists ================== */
-.readers-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; padding: 16px; }
-
-.reader-box img { width: 100%; border-radius: 14px; margin-bottom: 10px; }
-.reader-box span { display: block; font-weight: 700; color: var(--text); }
-
-.surahs-list { display: flex; flex-direction: column; align-items: center; padding: 20px; gap: 12px;}
-.surah-item { width: 95%; text-align: center; font-size: 18px; font-weight: bold; }
-
-/* ================== Audio Player ================== */
-.player-bar {
-  position: fixed; bottom: -120px; left: 0; right: 0;
-  background: var(--primary); color: #fff; padding: 12px;
-  transition: .4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  border-radius: 20px 20px 0 0;
-}
-.player-bar.show { bottom: 0; }
-.player-title { text-align: center; font-size: 14px; margin-bottom: 8px; font-weight: bold; }
-audio { width: 100%; filter: invert(0); }
-
-/* ================== Reading Mode (Stories/Quran) ================== */
-:root { --reader-font-size: 22px; }
-.modal {
-  display: none; position: fixed; bottom: 0; left: 0; right: 0;
-  background: var(--card); padding: 25px; border-radius: 28px 28px 0 0;
-  z-index: 2000; border-top: 3px solid var(--primary);
-  box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
-}
-.modal.show { display: block; animation: slideUp 0.4s ease; }
-
-@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-
-#storyContent {
-  font-family: var(--font-content);
-  font-size: var(--reader-font-size);
-  line-height: 2; padding: 20px;
-  text-align: justify;
+@keyframes slideLeft {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
 }
 
-/* ================== Footer ================== */
-footer { text-align: center; font-size: 13px; color: var(--muted); margin: 30px 0; }
-
-
-
-/* منع تحديد النصوص والنسخ في التطبيق بالكامل */
-* {
-    -webkit-user-select: none; /* Safari */
-    -ms-user-select: none;      /* IE 10+ */
-    user-select: none;          /* Standard syntax */
-    
-    /* منع ظهور قائمة الخيارات عند الضغط المطول في الموبايل */
-    -webkit-touch-callout: none; 
+/* ================== القراءة (القرآن والقصص) ================== */
+.reading-container {
+    padding: 0 12px; /* المسافة اللي طلبتها تكون صغيرة */
+    max-width: 100%; margin: 0 auto;
 }
 
-/* استثناء: لو عندك خانة بحث (Input) لازم نسمح فيها بالكتابة والتحديد */
-input, textarea {
-    -webkit-user-select: text;
-    -ms-user-select: text;
-    user-select: text;
+.text-content {
+    font-family: var(--font-content);
+    font-size: var(--font-size, 24px);
+    line-height: 1.8; text-align: justify;
+    color: var(--text);
 }
+
+/* ================== لوحة الإعدادات (Bottom Sheet) ================== */
+.bottom-sheet {
+    position: fixed; bottom: -100%; left: 0; right: 0;
+    background: var(--card); padding: 30px 20px;
+    border-radius: 30px 30px 0 0; z-index: 3000;
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.2);
+    transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.bottom-sheet.open { bottom: 0; }
+
+.sheet-header {
+    width: 50px; height: 5px; background: #ccc;
+    border-radius: 10px; margin: -15px auto 20px;
+}
+
+/* ================== الكروت العامة ================== */
+.card {
+    background: var(--card); border-radius: 20px;
+    padding: 20px; margin-bottom: 15px;
+    border-bottom: 4px solid var(--primary);
+    box-shadow: var(--shadow); transition: var(--transition);
+}
+
+.card:hover { transform: translateY(-5px); box-shadow: 0 12px 40px var(--glow-color); }
+
+/* أنيميشن النبض للصلاة القادمة */
+.pulse-primary {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(46, 125, 50, 0.4); }
+    70% { box-shadow: 0 0 0 15px rgba(46, 125, 50, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(46, 125, 50, 0); }
+}
+
+/* تعديل خانات البحث */
+.search-bar {
+    margin: 15px; background: var(--card);
+    border-radius: 15px; padding: 12px 20px;
+    display: flex; align-items: center;
+    border: 1px solid rgba(0,0,0,0.05);
+    border-bottom: 3px solid var(--primary);
+}
+
+.search-bar input {
+    border: none; background: none; outline: none;
+    color: var(--text); font-family: var(--font-ui);
+    width: 100%; font-size: 16px; margin-right: 10px;
+      }
